@@ -3,84 +3,79 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>英語單字精熟學習系統 | Vocabulary Master</title>
-    <!-- 引入 Tailwind CSS 進行快速切版 -->
+    <title>單字複習網站 | B4 Unit 1</title>
+    <!-- 引入 Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- 引入 FontAwesome 圖示 -->
+    <!-- 引入 FontAwesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- Google Fonts: Noto Sans TC -->
-    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <!-- Google Fonts: Orbitron (數值用) + Noto Sans TC (中文用) -->
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700&family=Noto+Sans+TC:wght@400;500;700&family=Zen+Maru+Gothic:wght@500;700&display=swap" rel="stylesheet">
     
     <style>
         body {
-            font-family: 'Roboto', 'Noto Sans TC', sans-serif;
-            background-color: #f0fdf4; /* 淺綠色背景，護眼且放鬆 */
-            touch-action: manipulation; /* 優化觸控 */
+            /* 動漫風格背景：深靛藍漸層 */
+            background: linear-gradient(135deg, #1e1b4b 0%, #312e81 50%, #4c1d95 100%);
+            font-family: 'Noto Sans TC', sans-serif;
+            color: #fff;
+            touch-action: manipulation;
+            background-attachment: fixed;
+        }
+
+        /* 數值專用字體 */
+        .font-num { font-family: 'Orbitron', sans-serif; }
+        /* 圓潤可愛字體 (標題用) */
+        .font-cute { font-family: 'Zen Maru Gothic', sans-serif; }
+
+        /* 玻璃擬態 (Glassmorphism) 容器 */
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+        }
+
+        /* RPG 風格按鈕 */
+        .rpg-btn {
+            position: relative;
+            transition: all 0.1s;
+            border-bottom: 4px solid rgba(0,0,0,0.3);
+        }
+        .rpg-btn:active {
+            transform: translateY(2px);
+            border-bottom: 0px solid transparent;
         }
 
         /* 翻轉卡片特效 */
-        .perspective-1000 {
-            perspective: 1000px;
-        }
-        .transform-style-3d {
-            transform-style: preserve-3d;
-        }
-        .backface-hidden {
-            backface-visibility: hidden;
-        }
-        .rotate-y-180 {
-            transform: rotateY(180deg);
-        }
+        .perspective-1000 { perspective: 1000px; }
+        .transform-style-3d { transform-style: preserve-3d; }
+        .backface-hidden { backface-visibility: hidden; }
+        .rotate-y-180 { transform: rotateY(180deg); }
 
-        /* 錄音波紋動畫 */
+        /* 錄音波紋 */
         .recording-pulse {
             animation: pulse-ring 1.5s cubic-bezier(0.215, 0.61, 0.355, 1) infinite;
         }
         @keyframes pulse-ring {
-            0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7); }
-            70% { transform: scale(1); box-shadow: 0 0 0 10px rgba(239, 68, 68, 0); }
-            100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); }
+            0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(236, 72, 153, 0.7); }
+            70% { transform: scale(1); box-shadow: 0 0 0 15px rgba(236, 72, 153, 0); }
+            100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(236, 72, 153, 0); }
         }
 
-        /* 遊戲配對卡片 */
-        .game-card {
-            transition: all 0.3s ease;
-            cursor: pointer;
-        }
-        .game-card.matched {
-            visibility: hidden;
-            opacity: 0;
-        }
-        
-        /* 自定義捲軸 */
-        ::-webkit-scrollbar {
-            width: 8px;
-        }
-        ::-webkit-scrollbar-track {
-            background: #f1f1f1; 
-        }
-        ::-webkit-scrollbar-thumb {
-            background: #888; 
-            border-radius: 4px;
-        }
-        ::-webkit-scrollbar-thumb:hover {
-            background: #555; 
-        }
+        /* 捲軸美化 */
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: rgba(0,0,0,0.2); }
+        ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.3); border-radius: 3px; }
+        ::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.5); }
 
-        /* 新增：結算視窗動畫 */
-        @keyframes bounce-in {
-            0% { transform: scale(0.9); opacity: 0; }
-            50% { transform: scale(1.05); }
+        /* 動畫 */
+        @keyframes pop-in {
+            0% { transform: scale(0.8); opacity: 0; }
             100% { transform: scale(1); opacity: 1; }
         }
-        .animate-bounce-in {
-            animation: bounce-in 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
-        }
+        .animate-pop { animation: pop-in 0.3s cubic-bezier(0.34, 1.56, 0.64, 1); }
         
-        /* 震動特效 (錯誤時) */
-        .shake {
-            animation: shake 0.5s cubic-bezier(.36,.07,.19,.97) both;
-        }
+        .shake { animation: shake 0.5s cubic-bezier(.36,.07,.19,.97) both; }
         @keyframes shake {
             10%, 90% { transform: translate3d(-1px, 0, 0); }
             20%, 80% { transform: translate3d(2px, 0, 0); }
@@ -89,313 +84,351 @@
         }
     </style>
 </head>
-<body class="text-gray-800 h-screen flex flex-col overflow-hidden">
+<body class="h-screen flex flex-col overflow-hidden">
 
-    <!-- 頂部導航與標題 -->
-    <header class="bg-teal-600 text-white shadow-lg z-10">
+    <!-- 頂部狀態列 (RPG Status Bar) -->
+    <header class="glass-panel z-10 border-b-0 border-b-white/10">
         <div class="max-w-4xl mx-auto px-4 py-3 flex justify-between items-center">
-            <h1 class="text-lg font-bold flex items-center gap-2">
-                <i class="fas fa-graduation-cap"></i>
-                單字精熟系統 <span class="text-xs bg-teal-700 px-2 py-1 rounded hidden sm:inline-block">Unit 4 (Demo)</span>
-            </h1>
-            <div class="text-xs sm:text-sm bg-teal-700 px-3 py-1 rounded-full">
-                <i class="fas fa-user-circle mr-1"></i> 學生模式
+            <div class="flex items-center gap-3">
+                <div class="bg-gradient-to-br from-blue-400 to-blue-600 w-10 h-10 rounded-lg flex items-center justify-center shadow-lg border-2 border-white/30 transform -rotate-6">
+                    <i class="fas fa-gamepad text-white text-lg"></i>
+                </div>
+                <div>
+                    <h1 class="text-lg font-bold font-cute text-white text-shadow-sm leading-tight">單字大冒險</h1>
+                    <div class="flex items-center gap-2">
+                        <span class="text-[10px] bg-indigo-900/80 px-2 py-0.5 rounded text-cyan-300 border border-cyan-500/30">B4 Unit 1</span>
+                        <span class="text-[10px] text-indigo-200">Esports Gamer</span>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 玩家狀態 -->
+            <div class="flex items-center bg-black/30 rounded-full px-3 py-1 gap-2 border border-white/10">
+                <div class="w-2 h-2 rounded-full bg-green-400 animate-pulse"></div>
+                <span class="text-xs font-bold text-white">Player 1</span>
             </div>
         </div>
     </header>
 
-    <!-- 主要內容區 (可捲動) -->
-    <main class="flex-1 overflow-y-auto bg-gray-50 relative w-full max-w-4xl mx-auto shadow-xl" id="app-container">
+    <!-- 主要內容區 -->
+    <main class="flex-1 overflow-y-auto relative w-full max-w-4xl mx-auto p-4" id="app-container">
         
-        <!-- 頁面 1: 單字卡學習 (Flashcards) -->
-        <section id="page-learn" class="p-4 flex flex-col items-center justify-center min-h-full">
+        <!-- 頁面 1: 單字卡學習 -->
+        <section id="page-learn" class="flex flex-col items-center justify-center min-h-full pb-20">
             
-            <!-- 進度條與篩選開關 -->
-            <div class="w-full max-w-md mb-4">
+            <!-- 等級進度條 -->
+            <div class="w-full max-w-md mb-6 bg-black/20 p-3 rounded-xl border border-white/10 backdrop-blur-sm">
                 <div class="flex justify-between items-end mb-2">
-                    <div class="text-xs text-gray-500">
-                        <span id="progress-text">單字 1 / 28</span>
-                        <span id="learned-badge" class="hidden ml-2 text-green-600 font-bold bg-green-100 px-2 py-0.5 rounded-full text-xs"><i class="fas fa-check-circle"></i> 已學會</span>
+                    <div class="text-xs font-bold text-cyan-300 flex items-center gap-2">
+                        <span class="bg-cyan-900/50 px-2 rounded text-[10px]">LV.</span>
+                        <span id="progress-text" class="font-num text-sm">1 / 28</span>
+                        <span id="learned-badge" class="hidden text-green-400 bg-green-900/50 px-2 py-0.5 rounded text-[10px] border border-green-500/50 ml-1">
+                            <i class="fas fa-check"></i> CLEAR
+                        </span>
                     </div>
                     
-                    <!-- 新增：篩選開關 -->
-                    <label class="flex items-center cursor-pointer select-none">
+                    <!-- 篩選開關 -->
+                    <label class="flex items-center cursor-pointer select-none group">
                         <input type="checkbox" id="filter-toggle" class="sr-only peer" onchange="toggleFilterMode()">
-                        <div class="relative w-9 h-5 bg-gray-300 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-teal-600"></div>
-                        <span class="ms-2 text-xs font-medium text-gray-600">只練習不熟的</span>
+                        <div class="relative w-10 h-5 bg-slate-800 peer-focus:outline-none rounded-full peer border border-slate-600 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-gray-400 after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-pink-500 peer-checked:after:bg-white"></div>
+                        <span class="ms-2 text-xs font-medium text-indigo-200 group-hover:text-white transition">只練不熟</span>
                     </label>
                 </div>
                 
-                <div class="w-full bg-gray-200 rounded-full h-2">
-                    <div id="progress-bar" class="bg-teal-500 h-2 rounded-full transition-all duration-300" style="width: 3%"></div>
+                <!-- EXP 條 -->
+                <div class="w-full bg-slate-800 rounded-full h-3 overflow-hidden border border-slate-600 relative">
+                    <div class="absolute inset-0 bg-repeat-x opacity-20" style="background-image: repeating-linear-gradient(45deg, transparent, transparent 10px, #000 10px, #000 20px);"></div>
+                    <div id="progress-bar" class="bg-gradient-to-r from-cyan-500 to-blue-500 h-3 transition-all duration-300 shadow-[0_0_10px_#06b6d4]" style="width: 3%"></div>
                 </div>
             </div>
 
-            <!-- 卡片本體 -->
+            <!-- 魔法單字卡 -->
             <div class="relative w-full max-w-md h-80 perspective-1000 group cursor-pointer" onclick="flipCard()">
-                <div id="flashcard-inner" class="relative w-full h-full text-center transition-all duration-500 transform-style-3d shadow-xl rounded-2xl">
+                <div id="flashcard-inner" class="relative w-full h-full text-center transition-all duration-500 transform-style-3d">
                     
                     <!-- 正面 (英文) -->
-                    <div class="absolute w-full h-full bg-white rounded-2xl backface-hidden flex flex-col items-center justify-center border-2 border-gray-100">
-                        <span id="card-pos-front" class="absolute top-4 right-4 text-xs font-mono bg-gray-100 text-gray-500 px-2 py-1 rounded">vt.</span>
-                        <h2 id="card-word" class="text-4xl font-bold text-gray-800 mb-4 tracking-wide">word</h2>
-                        <button onclick="event.stopPropagation(); playAudio()" class="w-12 h-12 rounded-full bg-teal-100 text-teal-600 hover:bg-teal-200 flex items-center justify-center transition-colors shadow-sm">
+                    <div class="absolute w-full h-full bg-slate-900/90 backdrop-blur-xl rounded-2xl backface-hidden flex flex-col items-center justify-center border-2 border-cyan-500/50 shadow-[0_0_30px_rgba(6,182,212,0.2)]">
+                        <!-- 裝飾角標 -->
+                        <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-cyan-400 to-transparent"></div>
+                        
+                        <span id="card-pos-front" class="absolute top-4 right-4 text-xs font-bold bg-slate-800 text-cyan-400 px-2 py-1 rounded border border-cyan-500/30 font-num">vt.</span>
+                        
+                        <h2 id="card-word" class="text-4xl font-bold text-white mb-6 tracking-wide drop-shadow-lg font-cute">word</h2>
+                        
+                        <button onclick="event.stopPropagation(); playAudio()" class="w-14 h-14 rounded-full bg-cyan-500/20 text-cyan-300 hover:bg-cyan-500 hover:text-white border border-cyan-400/50 flex items-center justify-center transition-all shadow-[0_0_15px_rgba(6,182,212,0.4)] active:scale-95">
                             <i class="fas fa-volume-up text-xl"></i>
                         </button>
-                        <p class="text-gray-400 text-sm mt-4 animate-pulse"><i class="fas fa-sync-alt mr-1"></i> 點擊翻卡查看字義</p>
+                        
+                        <p class="text-cyan-200/50 text-xs mt-8 animate-pulse flex items-center gap-1">
+                            <i class="fas fa-hand-pointer"></i> 點擊翻轉卡片
+                        </p>
                     </div>
 
                     <!-- 背面 (中文) -->
-                    <div class="absolute w-full h-full bg-teal-50 rounded-2xl backface-hidden rotate-y-180 flex flex-col items-center justify-center border-2 border-teal-100 px-6">
-                        <span id="card-pos-back" class="inline-block bg-teal-200 text-teal-800 text-xs px-2 py-1 rounded mb-3">vt.</span>
-                        <h3 id="card-meaning" class="text-3xl font-bold text-gray-800 mb-4">單字意思</h3>
-                        <div id="card-collocation-box" class="bg-white px-4 py-2 rounded-lg border border-teal-200 mt-2 hidden">
-                            <p class="text-xs text-gray-500 mb-1">常見搭配</p>
-                            <p id="card-collocation" class="text-teal-700 font-medium text-sm">make a record</p>
+                    <div class="absolute w-full h-full bg-slate-900/90 backdrop-blur-xl rounded-2xl backface-hidden rotate-y-180 flex flex-col items-center justify-center border-2 border-pink-500/50 shadow-[0_0_30px_rgba(236,72,153,0.2)] px-6">
+                        <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-pink-400 to-transparent"></div>
+                        
+                        <span id="card-pos-back" class="inline-block bg-pink-900/50 text-pink-300 text-xs px-2 py-1 rounded mb-3 border border-pink-500/30 font-num">vt.</span>
+                        <h3 id="card-meaning" class="text-3xl font-bold text-white mb-4 font-cute">中文意思</h3>
+                        <div id="card-collocation-box" class="bg-black/30 px-4 py-2 rounded border border-white/10 mt-2 hidden">
+                            <p class="text-[10px] text-gray-400 mb-1 tracking-wider uppercase">Combo Phrase</p>
+                            <p id="card-collocation" class="text-yellow-300 font-medium text-sm">make a record</p>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <!-- 新增：熟悉度標記按鈕 (放在卡片下方) -->
-            <div class="flex gap-3 w-full max-w-md mt-4 mb-2">
-                <button id="btn-unknown" onclick="markCurrentWord(false)" class="flex-1 py-2 rounded-full border border-red-200 text-red-500 bg-white hover:bg-red-50 font-bold transition shadow-sm flex items-center justify-center gap-2">
+            <!-- 熟悉度按鈕 -->
+            <div class="flex gap-3 w-full max-w-md mt-6 mb-4">
+                <button id="btn-unknown" onclick="markCurrentWord(false)" class="rpg-btn flex-1 py-3 rounded-xl bg-slate-700 text-red-300 hover:bg-slate-600 font-bold flex items-center justify-center gap-2 text-sm border-2 border-slate-600">
                     <i class="fas fa-times"></i> 還不熟
                 </button>
-                <button id="btn-known" onclick="markCurrentWord(true)" class="flex-1 py-2 rounded-full border border-green-200 text-green-500 bg-white hover:bg-green-50 font-bold transition shadow-sm flex items-center justify-center gap-2">
+                <button id="btn-known" onclick="markCurrentWord(true)" class="rpg-btn flex-1 py-3 rounded-xl bg-green-700 text-white hover:bg-green-600 font-bold flex items-center justify-center gap-2 text-sm border-2 border-green-600 shadow-[0_0_15px_rgba(34,197,94,0.3)]">
                     <i class="fas fa-check"></i> 已學會
                 </button>
             </div>
 
-            <!-- 控制區 (修改：改為 4 欄以容納隨機按鈕) -->
-            <div class="w-full max-w-md mt-2 grid grid-cols-4 gap-2">
-                <button onclick="prevWord()" class="py-3 rounded-lg bg-gray-200 text-gray-600 font-medium hover:bg-gray-300 transition flex flex-col sm:flex-row items-center justify-center gap-1">
-                    <i class="fas fa-arrow-left"></i> <span class="text-xs sm:text-base">上一個</span>
+            <!-- 控制面板 -->
+            <div class="w-full max-w-md grid grid-cols-4 gap-2">
+                <button onclick="prevWord()" class="rpg-btn py-3 rounded-lg bg-indigo-600 text-white hover:bg-indigo-500 border-indigo-800 flex flex-col items-center justify-center gap-1">
+                    <i class="fas fa-chevron-left text-sm"></i> 
+                    <span class="text-xs font-bold">上一個</span>
                 </button>
                 
-                <!-- 新增：隨機按鈕 -->
-                <button onclick="randomWord()" class="py-3 rounded-lg bg-indigo-100 text-indigo-600 font-medium hover:bg-indigo-200 transition flex flex-col sm:flex-row items-center justify-center gap-1">
-                    <i class="fas fa-random"></i> <span class="text-xs sm:text-base">隨機</span>
+                <button onclick="randomWord()" class="rpg-btn py-3 rounded-lg bg-purple-600 text-white hover:bg-purple-500 border-purple-800 flex flex-col items-center justify-center gap-1">
+                    <i class="fas fa-random text-sm"></i> 
+                    <span class="text-xs font-bold">隨機</span>
                 </button>
 
-                <!-- 錄音按鈕 -->
-                <button id="record-btn" onclick="toggleRecording()" class="py-3 rounded-lg bg-red-100 text-red-500 font-medium hover:bg-red-200 transition flex flex-col sm:flex-row items-center justify-center gap-1 border border-red-200">
-                    <i class="fas fa-microphone"></i> <span id="record-text" class="text-xs sm:text-base">跟讀</span>
+                <button id="record-btn" onclick="toggleRecording()" class="rpg-btn py-3 rounded-lg bg-pink-600 text-white hover:bg-pink-500 border-pink-800 flex flex-col items-center justify-center gap-1">
+                    <i class="fas fa-microphone text-sm"></i> 
+                    <span id="record-text" class="text-xs font-bold">跟讀</span>
                 </button>
 
-                <button onclick="nextWord()" class="py-3 rounded-lg bg-teal-600 text-white font-medium hover:bg-teal-700 transition shadow-lg flex flex-col sm:flex-row items-center justify-center gap-1">
-                    <span class="text-xs sm:text-base">下一個</span> <i class="fas fa-arrow-right"></i>
+                <button onclick="nextWord()" class="rpg-btn py-3 rounded-lg bg-blue-500 text-white hover:bg-blue-400 border-blue-700 flex flex-col items-center justify-center gap-1">
+                    <span class="text-xs font-bold">下一個</span>
+                    <i class="fas fa-chevron-right text-sm"></i> 
                 </button>
             </div>
 
             <!-- 錄音回饋區 -->
-            <div id="feedback-area" class="h-6 mt-4 text-center text-sm font-medium text-transparent transition-all">
-                等待回饋...
+            <div id="feedback-area" class="h-8 mt-4 flex items-center justify-center">
+                <span class="text-sm font-bold text-white/50 bg-black/20 px-4 py-1 rounded-full backdrop-blur-sm border border-white/5">
+                    請點擊「跟讀」開始練習
+                </span>
             </div>
             
-            <!-- 新增：播放錄音按鈕 (預設隱藏) -->
-            <button id="play-user-audio-btn" onclick="playUserAudio()" class="hidden mt-3 px-4 py-2 bg-blue-100 text-blue-600 rounded-full text-sm font-bold hover:bg-blue-200 transition flex items-center justify-center mx-auto gap-2 shadow-sm">
-                <i class="fas fa-play-circle"></i> 聽聽自己的發音
+            <button id="play-user-audio-btn" onclick="playUserAudio()" class="hidden mt-2 px-4 py-1.5 bg-cyan-900/50 text-cyan-300 border border-cyan-500/50 rounded-full text-xs font-bold hover:bg-cyan-800 transition flex items-center justify-center mx-auto gap-2 backdrop-blur-sm">
+                <i class="fas fa-play"></i> 播放我的錄音
             </button>
-
         </section>
 
-        <!-- 頁面 2: 闖關遊戲 (Games) -->
-        <section id="page-game" class="hidden p-4 min-h-full">
+        <!-- 頁面 2: 闖關遊戲 -->
+        <section id="page-game" class="hidden p-4 min-h-full pb-20">
             <div class="max-w-md mx-auto">
-                <h2 class="text-xl font-bold text-gray-800 mb-4 flex items-center">
-                    <i class="fas fa-gamepad text-teal-500 mr-2"></i> 選擇挑戰關卡
+                <h2 class="text-xl font-bold text-white mb-6 flex items-center font-cute">
+                    <i class="fas fa-dungeon text-yellow-400 mr-2"></i> 選擇副本 (Game Mode)
                 </h2>
                 
-                <!-- 關卡選單 -->
                 <div id="game-menu" class="grid grid-cols-1 gap-4">
-                    <div onclick="startGame(1)" class="bg-white p-5 rounded-xl shadow-md border-l-4 border-blue-400 cursor-pointer hover:shadow-lg transition flex items-center">
-                        <div class="bg-blue-100 p-3 rounded-full mr-4 text-blue-600"><i class="fas fa-eye"></i></div>
-                        <div>
-                            <h3 class="font-bold text-lg">第 1 關：眼明手快</h3>
-                            <p class="text-sm text-gray-500">看英文選中文，測試你的直覺反應！</p>
+                    <!-- 關卡 1 -->
+                    <div onclick="startGame(1)" class="group bg-slate-800/80 p-4 rounded-xl border-l-4 border-cyan-400 hover:bg-slate-700 cursor-pointer transition relative overflow-hidden shadow-lg">
+                        <div class="absolute right-0 top-0 opacity-10 text-6xl text-cyan-500 transform rotate-12 group-hover:scale-110 transition"><i class="fas fa-bolt"></i></div>
+                        <div class="flex items-center">
+                            <div class="bg-cyan-500 w-12 h-12 rounded-lg flex items-center justify-center text-white text-xl shadow-lg mr-4 group-hover:animate-bounce">
+                                <i class="fas fa-bolt"></i>
+                            </div>
+                            <div>
+                                <h3 class="font-bold text-lg text-white">第 1 關：眼明手快</h3>
+                                <p class="text-xs text-cyan-200">測試你的反應速度！</p>
+                            </div>
                         </div>
                     </div>
                     
-                    <div onclick="startGame(2)" class="bg-white p-5 rounded-xl shadow-md border-l-4 border-purple-400 cursor-pointer hover:shadow-lg transition flex items-center">
-                        <div class="bg-purple-100 p-3 rounded-full mr-4 text-purple-600"><i class="fas fa-puzzle-piece"></i></div>
-                        <div>
-                            <h3 class="font-bold text-lg">第 2 關：記憶配對</h3>
-                            <p class="text-sm text-gray-500">翻牌配對英文與中文，考驗記憶力！</p>
+                    <!-- 關卡 2 -->
+                    <div onclick="startGame(2)" class="group bg-slate-800/80 p-4 rounded-xl border-l-4 border-purple-400 hover:bg-slate-700 cursor-pointer transition relative overflow-hidden shadow-lg">
+                        <div class="absolute right-0 top-0 opacity-10 text-6xl text-purple-500 transform rotate-12 group-hover:scale-110 transition"><i class="fas fa-puzzle-piece"></i></div>
+                        <div class="flex items-center">
+                            <div class="bg-purple-500 w-12 h-12 rounded-lg flex items-center justify-center text-white text-xl shadow-lg mr-4 group-hover:animate-bounce">
+                                <i class="fas fa-puzzle-piece"></i>
+                            </div>
+                            <div>
+                                <h3 class="font-bold text-lg text-white">第 2 關：記憶配對</h3>
+                                <p class="text-xs text-purple-200">考驗你的記憶力！</p>
+                            </div>
                         </div>
                     </div>
 
-                    <!-- 新增：第 3 關按鈕 -->
-                    <div onclick="startGame(3)" class="bg-white p-5 rounded-xl shadow-md border-l-4 border-orange-400 cursor-pointer hover:shadow-lg transition flex items-center">
-                        <div class="bg-orange-100 p-3 rounded-full mr-4 text-orange-600"><i class="fas fa-keyboard"></i></div>
-                        <div>
-                            <h3 class="font-bold text-lg">第 3 關：拼字大師</h3>
-                            <p class="text-sm text-gray-500">看中文拼英文，挑戰你的精熟度！</p>
+                    <!-- 關卡 3 -->
+                    <div onclick="startGame(3)" class="group bg-slate-800/80 p-4 rounded-xl border-l-4 border-orange-400 hover:bg-slate-700 cursor-pointer transition relative overflow-hidden shadow-lg">
+                        <div class="absolute right-0 top-0 opacity-10 text-6xl text-orange-500 transform rotate-12 group-hover:scale-110 transition"><i class="fas fa-keyboard"></i></div>
+                        <div class="flex items-center">
+                            <div class="bg-orange-500 w-12 h-12 rounded-lg flex items-center justify-center text-white text-xl shadow-lg mr-4 group-hover:animate-bounce">
+                                <i class="fas fa-keyboard"></i>
+                            </div>
+                            <div>
+                                <h3 class="font-bold text-lg text-white">第 3 關：拼字大師</h3>
+                                <p class="text-xs text-orange-200">你能拼出正確單字嗎？</p>
+                            </div>
                         </div>
                     </div>
                 </div>
 
-                <!-- 遊戲區域 Level 1 (選擇題) -->
+                <!-- 遊戲區域 Level 1 -->
                 <div id="game-level-1" class="hidden">
-                    <div class="flex justify-between items-center mb-4 bg-blue-50 p-3 rounded-lg">
-                        <div class="flex gap-4">
-                            <span class="font-bold text-blue-800">Score: <span id="g1-score">0</span></span>
-                            <span class="font-bold text-blue-600">題號: <span id="g1-progress">1/10</span></span>
+                    <div class="flex justify-between items-center mb-4 bg-black/30 p-3 rounded-lg border border-white/10 backdrop-blur-sm">
+                        <div class="flex gap-4 text-sm">
+                            <span class="text-cyan-300 font-bold">分數: <span id="g1-score" class="text-white font-num">0</span></span>
+                            <span class="text-purple-300 font-bold">題號: <span id="g1-progress" class="text-white font-num">1/10</span></span>
                         </div>
-                        <button onclick="exitGame()" class="text-xs text-gray-500 underline">退出遊戲</button>
+                        <button onclick="exitGame()" class="text-xs text-slate-400 hover:text-white underline">退出</button>
                     </div>
                     
-                    <div class="bg-white p-8 rounded-2xl shadow-lg text-center mb-6">
-                        <h3 id="g1-question" class="text-3xl font-bold text-gray-800 mb-2">Question</h3>
-                        <span id="g1-pos" class="text-xs bg-gray-100 px-2 py-1 rounded text-gray-500">pos</span>
+                    <div class="bg-slate-800/90 p-8 rounded-2xl shadow-xl text-center mb-6 border-2 border-cyan-500/30 relative overflow-hidden">
+                        <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-cyan-500 to-blue-500"></div>
+                        <h3 id="g1-question" class="text-3xl font-bold text-white mb-2 font-cute">Question</h3>
+                        <span id="g1-pos" class="text-xs bg-slate-900 px-2 py-1 rounded text-cyan-300 border border-cyan-700">pos</span>
                     </div>
 
-                    <div id="g1-options" class="grid grid-cols-1 gap-3">
-                        <!-- 選項由 JS 生成 -->
-                    </div>
+                    <div id="g1-options" class="grid grid-cols-1 gap-3"></div>
                     <div id="g1-feedback" class="mt-4 text-center font-bold h-6"></div>
                 </div>
 
-                <!-- 遊戲區域 Level 2 (配對) -->
+                <!-- 遊戲區域 Level 2 -->
                 <div id="game-level-2" class="hidden">
-                    <div class="flex justify-between items-center mb-4 bg-purple-50 p-3 rounded-lg">
-                        <span class="font-bold text-purple-800">剩餘組數: <span id="g2-left">6</span></span>
-                        <span id="g2-timer" class="font-mono text-gray-600">00:00</span>
-                        <button onclick="exitGame()" class="text-xs text-gray-500 underline">退出</button>
+                    <div class="flex justify-between items-center mb-4 bg-black/30 p-3 rounded-lg border border-white/10 backdrop-blur-sm">
+                        <span class="text-sm text-purple-300 font-bold">剩餘: <span id="g2-left" class="text-white font-num">6</span> 組</span>
+                        <span id="g2-timer" class="font-num text-cyan-300 text-xl drop-shadow-[0_0_5px_#06b6d4]">00:00</span>
+                        <button onclick="exitGame()" class="text-xs text-slate-400 hover:text-white underline">退出</button>
                     </div>
-                    
-                    <div id="g2-grid" class="grid grid-cols-3 gap-2 sm:gap-4">
-                        <!-- 卡片由 JS 生成 -->
-                    </div>
+                    <div id="g2-grid" class="grid grid-cols-3 gap-2 sm:gap-4"></div>
                 </div>
 
-                <!-- 新增：遊戲區域 Level 3 (拼字) -->
+                <!-- 遊戲區域 Level 3 -->
                 <div id="game-level-3" class="hidden">
-                    <div class="flex justify-between items-center mb-4 bg-orange-50 p-3 rounded-lg">
-                        <div class="flex gap-4">
-                            <span class="font-bold text-orange-800">Score: <span id="g3-score">0</span></span>
-                            <span class="font-bold text-orange-600">題號: <span id="g3-progress">1/5</span></span>
+                    <div class="flex justify-between items-center mb-4 bg-black/30 p-3 rounded-lg border border-white/10 backdrop-blur-sm">
+                        <div class="flex gap-4 text-sm">
+                            <span class="text-orange-300 font-bold">分數: <span id="g3-score" class="text-white font-num">0</span></span>
+                            <span class="text-purple-300 font-bold">題號: <span id="g3-progress" class="text-white font-num">1/5</span></span>
                         </div>
-                        <button onclick="exitGame()" class="text-xs text-gray-500 underline">退出遊戲</button>
+                        <button onclick="exitGame()" class="text-xs text-slate-400 hover:text-white underline">退出</button>
                     </div>
 
-                    <div class="bg-white p-6 rounded-2xl shadow-lg text-center mb-6">
-                        <span id="g3-pos" class="inline-block bg-orange-100 text-orange-800 text-xs px-2 py-1 rounded mb-2 font-mono">pos</span>
-                        <h3 id="g3-meaning" class="text-2xl font-bold text-gray-800 mb-6">中文意思</h3>
-                        
+                    <div class="bg-slate-800/90 p-6 rounded-2xl shadow-xl text-center mb-6 border-2 border-orange-500/30 relative">
+                        <span id="g3-pos" class="inline-block bg-orange-900/50 text-orange-300 text-xs px-2 py-1 rounded mb-2 border border-orange-700">pos</span>
+                        <h3 id="g3-meaning" class="text-2xl font-bold text-white mb-6 font-cute">中文意思</h3>
                         <div class="relative max-w-xs mx-auto">
-                            <input type="text" id="g3-input" class="w-full px-4 py-3 text-lg border-2 border-gray-300 rounded-lg focus:outline-none focus:border-orange-500 text-center font-bold text-gray-700 tracking-wide" placeholder="請輸入單字" autocomplete="off">
+                            <input type="text" id="g3-input" class="w-full px-4 py-3 text-lg bg-slate-900 border-2 border-slate-600 rounded-lg text-white focus:outline-none focus:border-orange-500 text-center font-bold tracking-wide placeholder-slate-600 font-cute" placeholder="在此輸入英文..." autocomplete="off">
                         </div>
                     </div>
 
                     <div class="flex flex-col gap-3">
-                        <button onclick="checkAnswerG3()" class="w-full py-3 bg-orange-500 hover:bg-orange-600 text-white font-bold rounded-xl shadow transition">送出答案 (Submit)</button>
+                        <button onclick="checkAnswerG3()" class="rpg-btn w-full py-3 bg-orange-600 hover:bg-orange-500 text-white font-bold rounded-xl shadow-[0_0_15px_#f97316] border-orange-800">送出答案</button>
                         <div id="g3-feedback" class="text-center font-bold h-6 text-sm"></div>
                     </div>
                 </div>
-
             </div>
         </section>
 
-        <!-- 頁面 3: 學習歷程 (Stats) -->
-        <section id="page-stats" class="hidden p-6 min-h-full">
+        <!-- 頁面 3: 學習歷程 -->
+        <section id="page-stats" class="hidden p-6 min-h-full pb-20">
             <div class="max-w-md mx-auto">
-                <h2 class="text-xl font-bold text-gray-800 mb-6 flex items-center">
-                    <i class="fas fa-chart-line text-teal-500 mr-2"></i> 學習成果看板
+                <h2 class="text-xl font-bold text-white mb-6 flex items-center font-cute">
+                    <i class="fas fa-scroll text-yellow-400 mr-2"></i> 冒險日誌 (Stats)
                 </h2>
 
-                <!-- 總覽卡片 -->
                 <div class="grid grid-cols-2 gap-4 mb-6">
-                    <div class="bg-white p-4 rounded-xl shadow border border-gray-100 text-center">
-                        <div class="text-3xl font-bold text-teal-600" id="stat-learned">0</div>
-                        <div class="text-xs text-gray-500">已學習單字數</div>
+                    <div class="bg-slate-800/80 p-4 rounded-xl border border-white/10 text-center backdrop-blur-sm">
+                        <div class="text-3xl font-bold text-cyan-400 font-num text-shadow" id="stat-learned">0</div>
+                        <div class="text-xs text-slate-300 mt-1">已精熟單字</div>
                     </div>
-                    <div class="bg-white p-4 rounded-xl shadow border border-gray-100 text-center">
-                        <div class="text-3xl font-bold text-blue-600" id="stat-speech">0</div>
-                        <div class="text-xs text-gray-500">發音練習次數</div>
-                    </div>
-                </div>
-
-                <!-- 新增：已掌握單字詳細列表 -->
-                <div class="bg-white rounded-xl shadow border border-gray-100 overflow-hidden mb-6">
-                    <div class="bg-gray-50 px-4 py-3 border-b border-gray-100 font-bold text-gray-700 flex justify-between items-center">
-                        <span>已掌握單字列表</span>
-                        <span class="text-xs text-gray-400 font-normal">標記「已學會」將顯示於此</span>
-                    </div>
-                    <div class="p-4 max-h-60 overflow-y-auto custom-scrollbar">
-                        <div id="learned-word-list" class="flex flex-wrap gap-2">
-                            <!-- JS 動態生成 -->
-                            <span class="text-gray-400 text-sm">尚未開始學習...</span>
-                        </div>
+                    <div class="bg-slate-800/80 p-4 rounded-xl border border-white/10 text-center backdrop-blur-sm">
+                        <div class="text-3xl font-bold text-pink-400 font-num text-shadow" id="stat-speech">0</div>
+                        <div class="text-xs text-slate-300 mt-1">發音經驗值</div>
                     </div>
                 </div>
 
-                <!-- 詳細清單 -->
-                <div class="bg-white rounded-xl shadow border border-gray-100 overflow-hidden">
-                    <div class="bg-gray-50 px-4 py-3 border-b border-gray-100 font-bold text-gray-700">
-                        學習歷程紀錄
+                <div class="bg-slate-800/80 rounded-xl border border-white/10 overflow-hidden mb-6 backdrop-blur-sm">
+                    <div class="bg-black/20 px-4 py-3 border-b border-white/5 font-bold text-cyan-300 flex justify-between items-center text-sm">
+                        <span><i class="fas fa-book mr-2"></i> 已學會技能書</span>
+                        <span class="text-xs text-slate-400 font-normal">標記為「已學會」的項目</span>
+                    </div>
+                    <div class="p-4 max-h-60 overflow-y-auto">
+                        <div id="learned-word-list" class="flex flex-wrap gap-2"></div>
+                    </div>
+                </div>
+
+                <div class="bg-slate-800/80 rounded-xl border border-white/10 overflow-hidden backdrop-blur-sm">
+                    <div class="bg-black/20 px-4 py-3 border-b border-white/5 font-bold text-purple-300 text-sm">
+                        <i class="fas fa-history mr-2"></i> 冒險紀錄
                     </div>
                     <div class="p-4">
-                        <ul id="history-list" class="space-y-3 text-sm">
-                            <li class="text-gray-400 text-center py-4">目前尚無紀錄，快去練習吧！</li>
-                        </ul>
+                        <ul id="history-list" class="space-y-3 text-sm"></ul>
                     </div>
                 </div>
 
-                <button onclick="resetProgress()" class="mt-8 w-full py-3 text-gray-400 text-xs border border-gray-200 rounded hover:bg-red-50 hover:text-red-500 transition">
-                    清除所有學習紀錄 (重置)
+                <button onclick="resetProgress()" class="mt-8 w-full py-3 text-red-300 text-xs border border-red-900/50 rounded-lg hover:bg-red-900/30 transition">
+                    <i class="fas fa-trash-alt mr-1"></i> 重置所有進度 (刪檔)
                 </button>
             </div>
         </section>
-
     </main>
 
-    <!-- 新增：遊戲結算 Modal (取代 alert) -->
-    <div id="game-modal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden backdrop-blur-sm">
-        <div class="bg-white rounded-2xl p-8 max-w-sm w-full mx-4 shadow-2xl transform transition-all scale-100 animate-bounce-in text-center relative border-4 border-white">
-            <div class="absolute -top-10 left-1/2 transform -translate-x-1/2 bg-yellow-400 p-4 rounded-full border-4 border-white shadow-lg">
-                <i class="fas fa-trophy text-3xl text-white"></i>
-            </div>
-            <h3 class="text-2xl font-bold text-gray-800 mt-8 mb-2">恭喜通關！</h3>
-            <div class="py-4 space-y-3">
-                <div class="bg-gray-50 rounded-lg p-3 border border-gray-100">
-                    <!-- 修改：給標題和內容加上 ID 以便 JS 動態切換顯示 分數/時間 -->
-                    <p id="modal-label" class="text-xs text-gray-500 uppercase tracking-wide font-bold">總耗時</p>
-                    <p id="modal-value" class="text-3xl font-mono font-bold text-teal-600">00:00</p>
+    <!-- 遊戲結算 Modal (改為日系 RPG 對話框風格) -->
+    <div id="game-modal" class="fixed inset-0 bg-black/80 flex items-center justify-center z-50 hidden backdrop-blur-md">
+        <div class="bg-slate-900 rounded-lg p-1 max-w-sm w-full mx-4 shadow-[0_0_40px_rgba(6,182,212,0.5)] transform transition-all scale-100 animate-pop border-2 border-white/20">
+            <div class="bg-gradient-to-b from-slate-800 to-slate-900 rounded-lg p-6 text-center relative overflow-hidden">
+                <!-- 光效 -->
+                <div class="absolute top-0 left-0 w-full h-full bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')] opacity-10"></div>
+                
+                <div class="absolute -top-10 left-1/2 transform -translate-x-1/2 bg-yellow-500 p-4 rounded-full border-4 border-slate-900 shadow-xl">
+                    <i class="fas fa-crown text-3xl text-white"></i>
                 </div>
-                <div class="bg-blue-50 rounded-lg p-3 text-left border-l-4 border-blue-400">
-                    <p class="text-xs text-blue-500 font-bold mb-1">老師評語：</p>
-                    <p id="modal-feedback" class="text-sm text-blue-800 font-medium leading-relaxed">Loading...</p>
+                
+                <h3 class="text-2xl font-bold text-white mt-8 mb-2 font-cute tracking-widest text-shadow-md">通關成功!</h3>
+                
+                <div class="py-4 space-y-3 relative z-10">
+                    <div class="bg-black/40 rounded-lg p-3 border border-white/10">
+                        <p id="modal-label" class="text-xs text-slate-400 font-bold">本次成績</p>
+                        <p id="modal-value" class="text-4xl font-num font-bold text-yellow-400 drop-shadow-md">00:00</p>
+                    </div>
+                    
+                    <!-- NPC 對話框樣式 -->
+                    <div class="bg-indigo-900/30 rounded-lg p-3 text-left border-l-4 border-indigo-500 relative mt-4">
+                        <p class="text-[10px] text-indigo-300 font-bold mb-1">系統提示:</p>
+                        <p id="modal-feedback" class="text-sm text-white font-medium leading-relaxed">Loading...</p>
+                    </div>
                 </div>
-            </div>
-            <div class="grid grid-cols-2 gap-3 mt-4">
-                <button onclick="retryGame()" class="py-3 px-4 bg-gray-100 text-gray-600 rounded-xl hover:bg-gray-200 font-bold transition">再玩一次</button>
-                <button onclick="closeModalAndExit()" class="py-3 px-4 bg-teal-600 text-white rounded-xl hover:bg-teal-700 font-bold transition shadow-lg">回到選單</button>
+                
+                <div class="grid grid-cols-2 gap-3 mt-4 relative z-10">
+                    <button onclick="retryGame()" class="py-3 px-4 bg-slate-700 text-slate-200 rounded-lg hover:bg-slate-600 font-bold text-sm border-b-4 border-slate-900 active:border-b-0 active:translate-y-1 transition-all">再試一次</button>
+                    <button onclick="closeModalAndExit()" class="py-3 px-4 bg-cyan-600 text-white rounded-lg hover:bg-cyan-500 font-bold text-sm border-b-4 border-cyan-800 active:border-b-0 active:translate-y-1 transition-all shadow-[0_0_10px_#06b6d4]">回到選單</button>
+                </div>
             </div>
         </div>
     </div>
 
-    <!-- 底部導航列 -->
-    <nav class="bg-white border-t border-gray-200 safe-bottom">
+    <!-- 底部導航 (改為中文) -->
+    <nav class="glass-panel border-t-white/10 fixed bottom-0 w-full z-20 pb-safe">
         <div class="max-w-4xl mx-auto flex justify-around">
-            <button onclick="switchPage('learn')" class="nav-btn active flex-1 py-3 text-center text-gray-400 hover:text-teal-600 transition flex flex-col items-center gap-1 text-xs">
-                <i class="fas fa-book-open text-lg"></i>
-                <span>單字卡</span>
+            <button onclick="switchPage('learn')" class="nav-btn active flex-1 py-3 text-center text-slate-400 hover:text-cyan-300 transition flex flex-col items-center gap-1">
+                <i class="fas fa-book-open text-xl mb-0.5"></i>
+                <span class="text-[11px] font-bold">單字卡</span>
             </button>
-            <button onclick="switchPage('game')" class="nav-btn flex-1 py-3 text-center text-gray-400 hover:text-teal-600 transition flex flex-col items-center gap-1 text-xs">
-                <i class="fas fa-gamepad text-lg"></i>
-                <span>闖關挑戰</span>
+            <button onclick="switchPage('game')" class="nav-btn flex-1 py-3 text-center text-slate-400 hover:text-cyan-300 transition flex flex-col items-center gap-1">
+                <i class="fas fa-dungeon text-xl mb-0.5"></i>
+                <span class="text-[11px] font-bold">闖關挑戰</span>
             </button>
-            <button onclick="switchPage('stats')" class="nav-btn flex-1 py-3 text-center text-gray-400 hover:text-teal-600 transition flex flex-col items-center gap-1 text-xs">
-                <i class="fas fa-chart-pie text-lg"></i>
-                <span>學習歷程</span>
+            <button onclick="switchPage('stats')" class="nav-btn flex-1 py-3 text-center text-slate-400 hover:text-cyan-300 transition flex flex-col items-center gap-1">
+                <i class="fas fa-scroll text-xl mb-0.5"></i>
+                <span class="text-[11px] font-bold">學習歷程</span>
             </button>
         </div>
     </nav>
 
     <!-- JavaScript 邏輯 -->
     <script>
-        // --- 1. 資料庫 (Data Source) ---
+        // --- 1. 資料庫 (不變) ---
         const vocabData = [
             { id: 1, word: "individual", pos: "adj.", meaning: "個別的" },
             { id: 2, word: "individual", pos: "n. [C]", meaning: "個人" },
@@ -433,23 +466,19 @@
             { id: 34, word: "at least", pos: "phr.", meaning: "至少" }
         ];
 
-        // --- 2. 狀態管理 (State) ---
         let currentIndex = 0;
         let isFlipped = false;
-        let isFilterMode = false; // 新增：是否只顯示不熟單字
+        let isFilterMode = false;
         let userData = {
-            learned: [], // 存 id，代表已熟記 (Known)
+            learned: [], 
             speechCount: 0,
-            history: [] // { date: string, action: string }
+            history: [] 
         };
 
-        // --- 3. 初始化 ---
         window.onload = () => {
             loadUserData();
             renderCard();
             updateStats();
-            
-            // 監聽 Level 3 輸入框 Enter 鍵
             document.getElementById('g3-input').addEventListener('keypress', function(e) {
                 if(e.key === 'Enter') checkAnswerG3();
             });
@@ -457,9 +486,7 @@
 
         function loadUserData() {
             const saved = localStorage.getItem('vocabMasterData');
-            if (saved) {
-                userData = JSON.parse(saved);
-            }
+            if (saved) userData = JSON.parse(saved);
         }
 
         function saveData() {
@@ -467,97 +494,77 @@
             updateStats();
         }
 
-        // --- 4. 頁面切換邏輯 ---
         function switchPage(pageId) {
-            // 隱藏所有頁面
             document.querySelectorAll('section').forEach(el => el.classList.add('hidden'));
-            // 顯示目標頁面
             document.getElementById(`page-${pageId}`).classList.remove('hidden');
             
-            // 更新底部按鈕樣式
             document.querySelectorAll('.nav-btn').forEach(btn => {
-                btn.classList.remove('text-teal-600', 'font-bold');
-                btn.classList.add('text-gray-400');
+                btn.classList.remove('text-cyan-300', 'text-white');
+                btn.classList.add('text-slate-400');
             });
-            // 點擊的按鈕高亮
+            
             const btnMap = { 'learn': 0, 'game': 1, 'stats': 2 };
             const btns = document.querySelectorAll('.nav-btn');
-            btns[btnMap[pageId]].classList.remove('text-gray-400');
-            btns[btnMap[pageId]].classList.add('text-teal-600', 'font-bold');
+            btns[btnMap[pageId]].classList.remove('text-slate-400');
+            btns[btnMap[pageId]].classList.add('text-cyan-300', 'text-white');
 
             if(pageId === 'stats') renderHistory();
         }
 
-        // --- 5. 單字卡功能 (Flashcard) ---
         function renderCard() {
             const data = vocabData[currentIndex];
             const inner = document.getElementById('flashcard-inner');
             
-            // 重置翻面狀態
             isFlipped = false;
             inner.classList.remove('rotate-y-180');
             
-            // 填充內容
             document.getElementById('card-word').textContent = data.word;
             document.getElementById('card-pos-front').textContent = data.pos;
             document.getElementById('card-pos-back').textContent = data.pos;
             document.getElementById('card-meaning').textContent = data.meaning;
-            
-            // 搭配詞
             document.getElementById('card-collocation-box').classList.add('hidden');
 
-            // 進度更新 (現在基於已學會數量)
-            document.getElementById('progress-text').textContent = `單字 ${currentIndex + 1} / ${vocabData.length}`;
+            document.getElementById('progress-text').textContent = `${currentIndex + 1} / ${vocabData.length}`;
             const pct = (userData.learned.length / vocabData.length) * 100;
             document.getElementById('progress-bar').style.width = `${pct}%`;
 
-            // 更新按鈕與標記狀態
             updateFamiliarityUI(data.id);
         }
         
-        // 新增：更新熟悉度按鈕與標記的顯示
         function updateFamiliarityUI(id) {
             const isKnown = userData.learned.includes(id);
             const badge = document.getElementById('learned-badge');
             const btnKnown = document.getElementById('btn-known');
             const btnUnknown = document.getElementById('btn-unknown');
 
+            // Reset base styles (RPG Button)
+            const baseClass = "rpg-btn flex-1 py-3 rounded-xl font-bold flex items-center justify-center gap-2 text-sm border-2";
+
             if (isKnown) {
                 badge.classList.remove('hidden');
-                // 按鈕樣式變化：已學會變綠色實心
-                btnKnown.classList.remove('bg-white', 'text-green-500');
-                btnKnown.classList.add('bg-green-500', 'text-white');
-                // 還不熟變回預設
-                btnUnknown.classList.remove('bg-red-500', 'text-white');
-                btnUnknown.classList.add('bg-white', 'text-red-500');
+                // Known: Bright Green
+                btnKnown.className = `${baseClass} bg-green-600 text-white border-green-500 shadow-[0_0_15px_rgba(34,197,94,0.4)]`;
+                // Unknown: Dimmed
+                btnUnknown.className = `${baseClass} bg-slate-800 text-red-900 border-slate-700 opacity-50`;
             } else {
                 badge.classList.add('hidden');
-                // 按鈕樣式變化：還不熟可視為預設狀態或強調
-                btnKnown.classList.remove('bg-green-500', 'text-white');
-                btnKnown.classList.add('bg-white', 'text-green-500');
-                // 這裡我們不強制讓"還不熟"亮起，保持清爽，除非有點擊互動
+                // Known: Default Green
+                btnKnown.className = `${baseClass} bg-slate-800 text-green-500 border-green-900 hover:bg-green-900/20`;
+                // Unknown: Default Red
+                btnUnknown.className = `${baseClass} bg-slate-700 text-red-300 hover:bg-slate-600 border-slate-600`;
             }
         }
 
-        // 新增：標記當前單字熟悉度
         function markCurrentWord(isKnown) {
             const currentId = vocabData[currentIndex].id;
-            
             if (isKnown) {
                 if (!userData.learned.includes(currentId)) {
                     userData.learned.push(currentId);
                     saveData();
                     updateFamiliarityUI(currentId);
-                    
-                    // 如果在「只練習不熟」模式，自動跳下一張
-                    if (isFilterMode) {
-                        setTimeout(() => {
-                            nextWord();
-                        }, 500);
-                    }
+                    if (isFilterMode) setTimeout(() => nextWord(), 500);
                 }
             } else {
-                // 標記為不熟 (從 learned 移除)
                 if (userData.learned.includes(currentId)) {
                     userData.learned = userData.learned.filter(id => id !== currentId);
                     saveData();
@@ -566,12 +573,9 @@
             }
         }
 
-        // 新增：切換篩選模式
         function toggleFilterMode() {
             const toggle = document.getElementById('filter-toggle');
             isFilterMode = toggle.checked;
-            
-            // 如果當前單字已學會，且切換到過濾模式，自動跳到下一個不熟的
             if (isFilterMode && userData.learned.includes(vocabData[currentIndex].id)) {
                 nextWord();
             }
@@ -580,45 +584,32 @@
         function flipCard() {
             const inner = document.getElementById('flashcard-inner');
             isFlipped = !isFlipped;
-            if (isFlipped) {
-                inner.classList.add('rotate-y-180');
-            } else {
-                inner.classList.remove('rotate-y-180');
-            }
+            if (isFlipped) inner.classList.add('rotate-y-180');
+            else inner.classList.remove('rotate-y-180');
         }
 
         function nextWord() {
             let nextIndex = currentIndex;
             let loopCount = 0;
             const maxLoop = vocabData.length;
-
-            // 尋找下一個
             do {
                 nextIndex++;
                 if (nextIndex >= vocabData.length) {
-                    // 若到底，檢查模式
                     if (isFilterMode) {
-                        // 如果所有單字都學會了
                         if (userData.learned.length === vocabData.length) {
-                            alert("太棒了！你已經學會所有單字了！\n建議可以重置學習紀錄，或前往闖關遊戲挑戰。");
+                            alert("恭喜！所有單字都已經學會囉！");
                             return; 
                         }
-                        // 循環回到開頭繼續找
                         nextIndex = 0;
                     } else {
-                        // 正常模式到底就停或提示
-                        alert("恭喜！你已經瀏覽完所有單字了！");
+                        alert("已經是最後一個單字囉！建議去玩遊戲複習。");
                         return;
                     }
                 }
-                
                 loopCount++;
-                // 防止無限迴圈
                 if (loopCount > maxLoop) break;
-
             } while (isFilterMode && userData.learned.includes(vocabData[nextIndex].id));
 
-            // 如果找到了合適的單字
             if (nextIndex < vocabData.length) {
                 currentIndex = nextIndex;
                 renderCard();
@@ -629,17 +620,12 @@
             let prevIndex = currentIndex;
             let loopCount = 0;
             const maxLoop = vocabData.length;
-
             do {
                 prevIndex--;
                 if (prevIndex < 0) {
-                     if (isFilterMode) {
-                        prevIndex = vocabData.length - 1;
-                     } else {
-                        return; // 已經是第一個
-                     }
+                     if (isFilterMode) prevIndex = vocabData.length - 1;
+                     else return;
                 }
-                
                 loopCount++;
                 if (loopCount > maxLoop) break;
             } while (isFilterMode && userData.learned.includes(vocabData[prevIndex].id));
@@ -650,63 +636,35 @@
             }
         }
 
-        // 新增：隨機單字功能 (支援篩選)
         function randomWord() {
-            // 找出所有符合條件的 candidates
             let candidates = [];
-            
             vocabData.forEach((item, index) => {
-                // 如果是篩選模式，且該字已學會，則不加入候選
-                if (isFilterMode && userData.learned.includes(item.id)) {
-                    return;
-                }
-                // 排除當前單字 (除非只有這一個候選)
-                if (index !== currentIndex) {
-                    candidates.push(index);
-                }
+                if (isFilterMode && userData.learned.includes(item.id)) return;
+                if (index !== currentIndex) candidates.push(index);
             });
             
-            // 如果所有字都學會了
             if (candidates.length === 0) {
-                if (isFilterMode) {
-                     // 檢查是否當前字也是已學會 (唯一剩下的)
-                     if (!userData.learned.includes(vocabData[currentIndex].id)) {
-                         // 只剩當前這字沒學會，不動作
-                         alert("只剩這個單字還沒學會囉！加油！");
-                     } else {
-                         alert("太棒了！你已經學會所有單字了！");
-                     }
-                } else {
-                     // 一般模式下如果只有一個字
-                     if(vocabData.length <= 1) return;
-                     // 隨機跳
-                     let newIdx = Math.floor(Math.random() * vocabData.length);
-                     while(newIdx === currentIndex) newIdx = Math.floor(Math.random() * vocabData.length);
-                     currentIndex = newIdx;
-                     renderCard();
+                if (isFilterMode && !userData.learned.includes(vocabData[currentIndex].id)) {
+                     alert("只剩下這一個單字還沒熟喔！加油！");
+                } else if(isFilterMode) {
+                     alert("恭喜！所有單字都學會了！");
                 }
                 return;
             }
-
-            const randomIndex = candidates[Math.floor(Math.random() * candidates.length)];
-            currentIndex = randomIndex;
+            currentIndex = candidates[Math.floor(Math.random() * candidates.length)];
             renderCard();
         }
 
-        // --- 5.1 音訊與錄音 (Audio & Recording) ---
         function playAudio() {
             const word = vocabData[currentIndex].word;
-            // 使用瀏覽器內建 Web Speech API
             const utterance = new SpeechSynthesisUtterance(word);
             utterance.lang = 'en-US';
-            utterance.rate = 0.9; // 稍微放慢
+            utterance.rate = 0.9;
             window.speechSynthesis.speak(utterance);
         }
 
-        // 真實語音辨識邏輯
         let recognition = null;
         let isRecording = false;
-        
         let mediaRecorder = null;
         let audioChunks = [];
         let audioURL = null;
@@ -724,29 +682,15 @@
                 evaluatePronunciation(transcript, targetWord);
                 stopRecordingUI();
             };
-
             recognition.onerror = function(event) {
-                console.error("Speech recognition error", event.error);
-                let msg = "辨識失敗，請重試";
-                let color = "text-red-500";
-
-                if(event.error === 'no-speech') {
-                    msg = "沒聽到聲音，請再試一次";
-                } else if(event.error === 'not-allowed') {
-                    msg = "請允許麥克風權限";
-                } else if(event.error === 'network') {
-                    msg = "網路不穩，無法辨識";
-                }
-                
                 const feedback = document.getElementById('feedback-area');
-                feedback.textContent = msg;
-                feedback.className = `h-6 mt-4 text-center text-sm font-bold ${color}`;
+                let msg = "辨識錯誤";
+                if(event.error === 'not-allowed') msg = "請允許麥克風權限";
+                if(event.error === 'no-speech') msg = "沒聽到聲音";
+                feedback.innerHTML = `<span class="text-red-400 bg-black/40 px-3 py-1 rounded">${msg}</span>`;
                 stopRecordingUI();
             };
-
-            recognition.onend = function() {
-                if(isRecording) stopRecordingUI();
-            };
+            recognition.onend = function() { if(isRecording) stopRecordingUI(); };
         }
 
         async function toggleRecording() {
@@ -754,7 +698,7 @@
             const playBtn = document.getElementById('play-user-audio-btn');
 
             if (!recognition) {
-                alert("抱歉，您的瀏覽器不支援語音辨識功能，請使用 Chrome 或 Edge 瀏覽器。");
+                alert("瀏覽器不支援語音功能，請改用 Chrome。");
                 return;
             }
 
@@ -762,41 +706,29 @@
             const text = document.getElementById('record-text');
 
             if (!isRecording) {
-                // 開始錄音
                 try {
                     const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
                     mediaRecorder = new MediaRecorder(stream);
                     audioChunks = [];
-                    
-                    mediaRecorder.ondataavailable = event => {
-                        audioChunks.push(event.data);
-                    };
-                    
+                    mediaRecorder.ondataavailable = event => audioChunks.push(event.data);
                     mediaRecorder.onstop = () => {
                         const audioBlob = new Blob(audioChunks, { type: 'audio/wav' });
                         if (audioURL) URL.revokeObjectURL(audioURL);
                         audioURL = URL.createObjectURL(audioBlob);
                         playBtn.classList.remove('hidden');
                     };
-
                     mediaRecorder.start();
                     recognition.start();
                     
                     isRecording = true;
-                    btn.classList.remove('bg-red-100', 'text-red-500');
-                    btn.classList.add('bg-red-500', 'text-white', 'recording-pulse');
+                    // Pink glow animation for anime style
+                    btn.className = "rpg-btn py-3 rounded-lg bg-pink-600 text-white border-pink-500 recording-pulse flex flex-col items-center justify-center gap-1";
                     text.textContent = "聆聽中...";
-                    feedback.textContent = "請大聲唸出單字...";
-                    feedback.className = "h-6 mt-4 text-center text-sm font-medium text-gray-500";
+                    feedback.innerHTML = `<span class="text-pink-300 bg-black/40 px-3 py-1 rounded animate-pulse">請大聲朗讀...</span>`;
                     playBtn.classList.add('hidden');
 
                 } catch(e) {
-                    console.error("Recording start error:", e);
-                    let msg = "無法存取麥克風";
-                    if (window.location.protocol === 'file:') {
-                        msg += " (請嘗試將檔案放上伺服器或使用 localhost)";
-                    }
-                    alert(msg);
+                    alert("無法存取麥克風");
                     isRecording = false;
                     stopRecordingUI();
                 }
@@ -808,78 +740,49 @@
 
         function stopRecordingUI() {
             isRecording = false;
-            
             if (mediaRecorder && mediaRecorder.state !== 'inactive') {
                 mediaRecorder.stop();
                 mediaRecorder.stream.getTracks().forEach(track => track.stop());
             }
-
             const btn = document.getElementById('record-btn');
             const text = document.getElementById('record-text');
-            
-            btn.classList.remove('bg-red-500', 'text-white', 'recording-pulse');
-            btn.classList.add('bg-red-100', 'text-red-500');
+            // Reset style
+            btn.className = "rpg-btn py-3 rounded-lg bg-pink-600 text-white hover:bg-pink-500 border-pink-800 flex flex-col items-center justify-center gap-1";
             text.textContent = "跟讀";
         }
 
         function playUserAudio() {
-            if (audioURL) {
-                const audio = new Audio(audioURL);
-                audio.play();
-            }
+            if (audioURL) new Audio(audioURL).play();
         }
 
         function evaluatePronunciation(spoken, target) {
             const cleanSpoken = spoken.toLowerCase().trim().replace(/[.,!?]/g, '');
             const cleanTarget = target.toLowerCase().trim().replace(/[.,!?]/g, '');
-            
             const feedback = document.getElementById('feedback-area');
-            let msg = "";
-            let color = "";
-
-            if (cleanSpoken === cleanTarget) {
-                msg = "Excellent! 發音完全正確！";
-                color = "text-green-600";
-                userData.speechCount++;
-                saveData();
-            } else if (cleanSpoken.includes(cleanTarget)) {
-                msg = `Good Job! (聽到: ${cleanSpoken})`;
-                color = "text-green-600";
+            
+            if (cleanSpoken.includes(cleanTarget)) {
+                feedback.innerHTML = `<span class="text-green-300 bg-black/40 px-3 py-1 rounded border border-green-500/50">🎉 發音正確! (聽到: ${cleanSpoken})</span>`;
                 userData.speechCount++;
                 saveData();
             } else {
-                msg = `再試一次？ (聽到: ${cleanSpoken})`;
-                color = "text-orange-500";
+                feedback.innerHTML = `<span class="text-orange-300 bg-black/40 px-3 py-1 rounded border border-orange-500/50">再試一次 (聽到: ${cleanSpoken})</span>`;
             }
-            
-            feedback.textContent = msg;
-            feedback.className = `h-6 mt-4 text-center text-sm font-bold transition-all ${color}`;
         }
 
-        // --- 6. 遊戲邏輯 (Games) ---
+        // --- Games ---
         let activeLevel = 0; 
-
         function startGame(level) {
             activeLevel = level;
             document.getElementById('game-menu').classList.add('hidden');
-            
-            if (level === 1) {
-                document.getElementById('game-level-1').classList.remove('hidden');
-                startLevel1();
-            } else if (level === 2) {
-                document.getElementById('game-level-2').classList.remove('hidden');
-                startLevel2();
-            } else if (level === 3) {
-                document.getElementById('game-level-3').classList.remove('hidden');
-                startLevel3();
-            }
+            document.getElementById(`game-level-${level}`).classList.remove('hidden');
+            if (level === 1) startLevel1();
+            else if (level === 2) startLevel2();
+            else if (level === 3) startLevel3();
         }
 
         function exitGame() {
             clearInterval(g2TimerInterval); 
-            document.getElementById('game-level-1').classList.add('hidden');
-            document.getElementById('game-level-2').classList.add('hidden');
-            document.getElementById('game-level-3').classList.add('hidden');
+            [1,2,3].forEach(l => document.getElementById(`game-level-${l}`).classList.add('hidden'));
             document.getElementById('game-menu').classList.remove('hidden');
             document.getElementById('game-modal').classList.add('hidden');
         }
@@ -894,42 +797,27 @@
             exitGame();
         }
 
-        // --- Level 1: 選擇題 ---
-        let g1CurrentItem;
-        let g1Score = 0;
-        let g1Questions = []; 
-        let g1Index = 0;      
-        let g1QuestionStartTime = 0; 
-
+        // Level 1: Reflex
+        let g1CurrentItem, g1Score=0, g1Questions=[], g1Index=0, g1QuestionStartTime=0;
         function startLevel1() {
-            g1Score = 0;
-            g1Index = 0;
+            g1Score = 0; g1Index = 0;
             document.getElementById('g1-score').textContent = g1Score;
             g1Questions = [...vocabData].sort(() => Math.random() - 0.5).slice(0, 10);
             nextQuestionG1();
         }
 
         function nextQuestionG1() {
-            if (g1Index >= g1Questions.length) {
-                endLevel1();
-                return;
-            }
-
+            if (g1Index >= g1Questions.length) { endLevel1(); return; }
             document.getElementById('g1-progress').textContent = `${g1Index + 1} / ${g1Questions.length}`;
             document.getElementById('g1-feedback').textContent = "";
-            
             g1CurrentItem = g1Questions[g1Index];
-            
             document.getElementById('g1-question').textContent = g1CurrentItem.word;
             document.getElementById('g1-pos').textContent = g1CurrentItem.pos;
 
             let options = [g1CurrentItem.meaning];
             while (options.length < 4) {
-                const wrongIdx = Math.floor(Math.random() * vocabData.length);
-                const wrongMeaning = vocabData[wrongIdx].meaning;
-                if (!options.includes(wrongMeaning)) {
-                    options.push(wrongMeaning);
-                }
+                const wrong = vocabData[Math.floor(Math.random() * vocabData.length)].meaning;
+                if (!options.includes(wrong)) options.push(wrong);
             }
             options.sort(() => Math.random() - 0.5);
 
@@ -937,12 +825,11 @@
             container.innerHTML = '';
             options.forEach(opt => {
                 const btn = document.createElement('button');
-                btn.className = "w-full py-3 px-4 bg-gray-100 rounded-lg text-gray-700 font-medium hover:bg-blue-100 transition text-left";
+                btn.className = "w-full py-3 px-4 bg-slate-700/80 rounded-lg text-white font-medium hover:bg-cyan-600 transition text-left border border-white/10 backdrop-blur-sm";
                 btn.textContent = opt;
                 btn.onclick = () => checkAnswerG1(opt, btn);
                 container.appendChild(btn);
             });
-
             g1QuestionStartTime = Date.now();
         }
 
@@ -950,118 +837,56 @@
             if(btnElement.disabled) return;
             const allBtns = document.getElementById('g1-options').querySelectorAll('button');
             allBtns.forEach(b => b.disabled = true);
-
             const feedback = document.getElementById('g1-feedback');
             
             if (selected === g1CurrentItem.meaning) {
                 const timeTaken = (Date.now() - g1QuestionStartTime) / 1000;
                 let points = 100;
-                let bonusMsg = "";
-
-                if (timeTaken < 1.5) {
-                    points += 50;
-                    bonusMsg = " 🔥神速!";
-                } else if (timeTaken < 3.0) {
-                    points += 30;
-                    bonusMsg = " ⚡快速!";
-                } else if (timeTaken < 5.0) {
-                    points += 10;
-                }
-
+                if (timeTaken < 1.5) points += 50;
+                else if (timeTaken < 3.0) points += 30;
+                else if (timeTaken < 5.0) points += 10;
+                
                 g1Score += points;
                 document.getElementById('g1-score').textContent = g1Score;
-
-                btnElement.classList.remove('bg-gray-100');
-                btnElement.classList.add('bg-green-500', 'text-white');
-                feedback.textContent = `Correct! +${points}分${bonusMsg}`;
-                feedback.className = "mt-4 text-center font-bold h-6 text-green-600";
                 
-                setTimeout(() => {
-                    g1Index++;
-                    nextQuestionG1();
-                }, 1000);
-
+                btnElement.className = "w-full py-3 px-4 bg-green-600 rounded-lg text-white font-bold border-2 border-green-400 shadow-[0_0_10px_#22c55e]";
+                feedback.innerHTML = `<span class="text-green-300">答對了! +${points} 分</span>`;
+                setTimeout(() => { g1Index++; nextQuestionG1(); }, 1000);
             } else {
-                btnElement.classList.remove('bg-gray-100');
-                btnElement.classList.add('bg-red-500', 'text-white');
-                
+                btnElement.className = "w-full py-3 px-4 bg-red-600 rounded-lg text-white font-bold border-2 border-red-400";
                 allBtns.forEach(b => {
                     if (b.textContent === g1CurrentItem.meaning) {
-                        b.classList.remove('bg-gray-100');
-                        b.classList.add('bg-green-100', 'text-green-800', 'border', 'border-green-300');
+                        b.className = "w-full py-3 px-4 bg-green-600 rounded-lg text-white font-bold border-2 border-green-400";
                     }
                 });
-
-                feedback.textContent = `Oops! 正確答案是：${g1CurrentItem.meaning}`;
-                feedback.className = "mt-4 text-center font-bold h-6 text-red-600";
-
-                setTimeout(() => {
-                    g1Index++;
-                    nextQuestionG1();
-                }, 1500);
+                feedback.innerHTML = `<span class="text-red-300">哎呀! 答錯了</span>`;
+                setTimeout(() => { g1Index++; nextQuestionG1(); }, 1500);
             }
         }
 
         function endLevel1() {
-            let feedback = "";
-            let rank = "";
-            
-            if (g1Score >= 1300) {
-                rank = "🏆 S級：單字大師";
-                feedback = "太驚人了！你的反應速度簡直是電腦等級！";
-            } else if (g1Score >= 1000) {
-                rank = "🥇 A級：英語高手";
-                feedback = "非常優秀！對這些單字已經掌握得很好了！";
-            } else if (g1Score >= 800) {
-                rank = "🥈 B級：潛力新星";
-                feedback = "很棒的成績！再多練習幾次就能挑戰滿分囉！";
-            } else {
-                rank = "🥉 繼續加油";
-                feedback = "別灰心，熟能生巧！去單字卡區多聽幾次發音吧！";
-            }
-
-            userData.history.unshift({
-                date: new Date().toLocaleDateString(),
-                action: `第 1 關挑戰 (得分: ${g1Score})`
-            });
+            userData.history.unshift({ date: new Date().toLocaleDateString(), action: `眼明手快 得分: ${g1Score}` });
             saveData();
-
-            const modal = document.getElementById('game-modal');
-            document.getElementById('modal-label').textContent = "最終得分";
-            document.getElementById('modal-value').textContent = g1Score;
-            document.getElementById('modal-feedback').innerHTML = `<span class="block font-bold text-lg mb-1">${rank}</span>${feedback}`;
-            modal.classList.remove('hidden');
+            showModal("最終得分", g1Score, g1Score >= 1000 ? "太神啦！你是單字大師！" : "很棒！繼續保持練習！");
         }
 
-        // --- Level 2: 配對遊戲 ---
-        let g2Cards = [];
-        let g2Selected = [];
-        let g2Matches = 0;
-        const G2_PAIRS = 6; 
-        let g2TimerInterval = null;
-        let g2StartTime = 0;
-
+        // Level 2: Memory
+        let g2Selected=[], g2Matches=0, g2TimerInterval, g2StartTime;
+        const G2_PAIRS = 6;
         function startLevel2() {
             g2Matches = 0;
             document.getElementById('g2-left').textContent = G2_PAIRS;
-            
             clearInterval(g2TimerInterval);
             g2StartTime = Date.now();
             document.getElementById('g2-timer').textContent = "00:00";
-            
             g2TimerInterval = setInterval(() => {
                 const elapsed = Math.floor((Date.now() - g2StartTime) / 1000);
-                const m = Math.floor(elapsed / 60).toString().padStart(2, '0');
-                const s = (elapsed % 60).toString().padStart(2, '0');
-                document.getElementById('g2-timer').textContent = `${m}:${s}`;
+                document.getElementById('g2-timer').textContent = `${Math.floor(elapsed/60).toString().padStart(2,'0')}:${(elapsed%60).toString().padStart(2,'0')}`;
             }, 1000);
 
-            let gameWords = [...vocabData].sort(() => Math.random() - 0.5).slice(0, G2_PAIRS);
-            
             let deck = [];
-            gameWords.forEach((item, index) => {
-                const wordLabel = `${item.word}\n(${item.pos})`;
-                deck.push({ id: index, type: 'word', content: wordLabel, matchId: index });
+            [...vocabData].sort(() => Math.random() - 0.5).slice(0, G2_PAIRS).forEach((item, index) => {
+                deck.push({ id: index, type: 'word', content: `${item.word}\n(${item.pos})`, matchId: index });
                 deck.push({ id: index, type: 'meaning', content: item.meaning, matchId: index });
             });
             deck.sort(() => Math.random() - 0.5);
@@ -1070,247 +895,136 @@
             grid.innerHTML = '';
             deck.forEach((card, idx) => {
                 const el = document.createElement('div');
-                el.className = "game-card bg-white border-2 border-purple-200 rounded-lg h-24 flex items-center justify-center p-2 text-center text-sm font-bold text-purple-800 shadow-sm hover:bg-purple-50 hover:shadow-md hover:-translate-y-1 transform transition-all whitespace-pre-line";
-                el.dataset.idx = idx;
-                el.textContent = card.content; 
-                el.onclick = () => selectG2Card(el, card); 
+                el.className = "game-card bg-slate-800/80 border-2 border-purple-500/30 rounded h-24 flex items-center justify-center p-2 text-center text-sm font-bold text-purple-200 shadow-sm hover:bg-purple-900/50 hover:border-purple-400 cursor-pointer whitespace-pre-line backdrop-blur-sm";
+                el.textContent = card.content;
+                el.onclick = () => selectG2Card(el, card);
                 grid.appendChild(el);
             });
         }
 
         function selectG2Card(el, card) {
-            if (el.classList.contains('matched') || g2Selected.some(s => s.el === el) || g2Selected.length >= 2) return;
-
-            el.classList.remove('bg-white', 'text-purple-800', 'hover:bg-purple-50');
-            el.classList.add('bg-purple-600', 'text-white', 'border-purple-600', 'scale-105');
-
+            if (el.classList.contains('opacity-0') || g2Selected.some(s => s.el === el) || g2Selected.length >= 2) return;
+            
+            el.className = "game-card bg-purple-600 border-2 border-white rounded h-24 flex items-center justify-center p-2 text-center text-sm font-bold text-white shadow-[0_0_15px_#a855f7] scale-105 whitespace-pre-line";
             g2Selected.push({ el, card });
 
             if (g2Selected.length === 2) {
-                checkMatch();
-            }
-        }
-
-        function checkMatch() {
-            const [first, second] = g2Selected;
-            
-            if (first.card.matchId === second.card.matchId && first.card.type !== second.card.type) {
-                setTimeout(() => {
-                    first.el.classList.add('opacity-0', 'pointer-events-none');
-                    second.el.classList.add('opacity-0', 'pointer-events-none');
-                    
-                    g2Matches++;
-                    document.getElementById('g2-left').textContent = G2_PAIRS - g2Matches;
-                    
-                    g2Selected = [];
-
-                    if(g2Matches === G2_PAIRS) {
-                        clearInterval(g2TimerInterval);
-                        const finalTime = Math.floor((Date.now() - g2StartTime) / 1000);
-                        
-                        let feedback = "";
-                        if(finalTime < 20) feedback = "太神了！簡直是單字閃電俠！⚡🏆";
-                        else if(finalTime < 40) feedback = "非常優秀！反應速度很快喔！🌟";
-                        else if(finalTime < 60) feedback = "很棒！穩紮穩打完成了挑戰！👍";
-                        else feedback = "恭喜完成！多練習幾次會越來越快喔！💪";
-
-                        userData.history.unshift({
-                            date: new Date().toLocaleDateString(),
-                            action: `第 2 關挑戰 (耗時: ${finalTime}秒)`
+                const [first, second] = g2Selected;
+                if (first.card.matchId === second.card.matchId && first.card.type !== second.card.type) {
+                    setTimeout(() => {
+                        first.el.classList.add('opacity-0', 'pointer-events-none');
+                        second.el.classList.add('opacity-0', 'pointer-events-none');
+                        g2Matches++;
+                        document.getElementById('g2-left').textContent = G2_PAIRS - g2Matches;
+                        g2Selected = [];
+                        if (g2Matches === G2_PAIRS) {
+                            clearInterval(g2TimerInterval);
+                            const t = Math.floor((Date.now() - g2StartTime) / 1000);
+                            userData.history.unshift({ date: new Date().toLocaleDateString(), action: `記憶配對 耗時: ${t}秒` });
+                            saveData();
+                            showModal("總耗時", `${t} 秒`, t < 40 ? "速度驚人！你是記憶天才！" : "恭喜通關！");
+                        }
+                    }, 300);
+                } else {
+                    setTimeout(() => {
+                        [first, second].forEach(item => {
+                            item.el.className = "game-card bg-slate-800/80 border-2 border-purple-500/30 rounded h-24 flex items-center justify-center p-2 text-center text-sm font-bold text-purple-200 shadow-sm hover:bg-purple-900/50 hover:border-purple-400 cursor-pointer whitespace-pre-line backdrop-blur-sm";
                         });
-                        saveData();
-
-                        setTimeout(() => {
-                            const modal = document.getElementById('game-modal');
-                            document.getElementById('modal-label').textContent = "總耗時";
-                            document.getElementById('modal-value').textContent = `${finalTime} 秒`;
-                            document.getElementById('modal-feedback').textContent = feedback;
-                            modal.classList.remove('hidden');
-                        }, 500);
-                    }
-                }, 300);
-            } else {
-                setTimeout(() => {
-                    [first, second].forEach(item => {
-                        item.el.classList.remove('bg-purple-600', 'text-white', 'border-purple-600', 'scale-105');
-                        item.el.classList.add('bg-white', 'text-purple-800', 'hover:bg-purple-50');
-                    });
-                    g2Selected = [];
-                }, 600); 
+                        g2Selected = [];
+                    }, 600);
+                }
             }
         }
 
-        // --- Level 3: 拼字遊戲 ---
-        let g3CurrentItem;
-        let g3Score = 0;
-        let g3Questions = [];
-        let g3Index = 0;
-
+        // Level 3: Spelling
+        let g3Score=0, g3Questions=[], g3Index=0, g3CurrentItem;
         function startLevel3() {
-            g3Score = 0;
-            g3Index = 0;
+            g3Score=0; g3Index=0;
             document.getElementById('g3-score').textContent = g3Score;
-            
-            // 隨機選 5 題
             g3Questions = [...vocabData].sort(() => Math.random() - 0.5).slice(0, 5);
             nextQuestionG3();
         }
-
         function nextQuestionG3() {
-            if (g3Index >= g3Questions.length) {
-                endLevel3();
-                return;
-            }
-
+            if (g3Index >= g3Questions.length) { endLevel3(); return; }
             document.getElementById('g3-progress').textContent = `${g3Index + 1} / ${g3Questions.length}`;
             document.getElementById('g3-feedback').textContent = "";
-            
             g3CurrentItem = g3Questions[g3Index];
-            
             document.getElementById('g3-pos').textContent = g3CurrentItem.pos;
             document.getElementById('g3-meaning').textContent = g3CurrentItem.meaning;
-            
             const input = document.getElementById('g3-input');
-            input.value = "";
-            input.disabled = false;
-            input.classList.remove('border-green-500', 'text-green-600', 'border-red-500', 'text-red-600');
+            input.value = ""; input.disabled = false;
+            // Reset style
+            input.className = "w-full px-4 py-3 text-lg bg-slate-900 border-2 border-slate-600 rounded-lg text-white focus:outline-none focus:border-orange-500 text-center font-bold tracking-wide placeholder-slate-600 font-cute";
             input.focus();
         }
-
         function checkAnswerG3() {
             const input = document.getElementById('g3-input');
-            const feedback = document.getElementById('g3-feedback');
-            
-            // 防止重複提交
             if(input.disabled) return;
-
             const userSpelling = input.value.trim().toLowerCase();
-            const correctSpelling = g3CurrentItem.word.toLowerCase();
-
             input.disabled = true;
 
-            if (userSpelling === correctSpelling) {
-                // 答對
+            if (userSpelling === g3CurrentItem.word.toLowerCase()) {
                 g3Score += 200;
                 document.getElementById('g3-score').textContent = g3Score;
-                
-                input.classList.add('border-green-500', 'text-green-600');
-                feedback.textContent = "Correct! 拼字正確！";
-                feedback.className = "mt-2 text-center font-bold text-green-600";
-                
-                setTimeout(() => {
-                    g3Index++;
-                    nextQuestionG3();
-                }, 1000);
+                input.className = "w-full px-4 py-3 text-lg bg-green-900/50 border-2 border-green-500 rounded-lg text-green-300 text-center font-bold font-cute";
+                document.getElementById('g3-feedback').innerHTML = `<span class="text-green-300">正確!</span>`;
+                setTimeout(() => { g3Index++; nextQuestionG3(); }, 1000);
             } else {
-                // 答錯
-                input.classList.add('border-red-500', 'text-red-600', 'shake'); // 加入震動特效
-                feedback.textContent = `Correct answer: ${g3CurrentItem.word}`;
-                feedback.className = "mt-2 text-center font-bold text-red-600";
-                
-                // 移除震動 class 以便下次觸發
-                setTimeout(() => input.classList.remove('shake'), 500);
-
-                setTimeout(() => {
-                    g3Index++;
-                    nextQuestionG3();
-                }, 2000); // 錯題給多一點時間看正確答案
+                input.className = "w-full px-4 py-3 text-lg bg-red-900/50 border-2 border-red-500 rounded-lg text-red-300 text-center font-bold font-cute shake";
+                document.getElementById('g3-feedback').innerHTML = `<span class="text-red-300">答案是: ${g3CurrentItem.word}</span>`;
+                setTimeout(() => { input.classList.remove('shake'); }, 500);
+                setTimeout(() => { g3Index++; nextQuestionG3(); }, 2000);
             }
         }
-
         function endLevel3() {
-            let feedback = "";
-            let rank = "";
-            
-            if (g3Score === 1000) {
-                rank = "🏆 拼字之神";
-                feedback = "太強了！全部答對，你的拼字能力無懈可擊！";
-            } else if (g3Score >= 800) {
-                rank = "🥇 拼字高手";
-                feedback = "非常厲害！只有一點點小失誤，繼續保持！";
-            } else if (g3Score >= 600) {
-                rank = "🥈 拼字達人";
-                feedback = "不錯喔！大部分單字都記住了，加油！";
-            } else {
-                rank = "🥉 繼續努力";
-                feedback = "拼字確實不容易，多玩幾次就會記住囉！";
-            }
-
-            userData.history.unshift({
-                date: new Date().toLocaleDateString(),
-                action: `第 3 關挑戰 (得分: ${g3Score})`
-            });
+            userData.history.unshift({ date: new Date().toLocaleDateString(), action: `拼字大師 得分: ${g3Score}` });
             saveData();
-
-            const modal = document.getElementById('game-modal');
-            document.getElementById('modal-label').textContent = "拼字得分";
-            document.getElementById('modal-value').textContent = g3Score;
-            document.getElementById('modal-feedback').innerHTML = `<span class="block font-bold text-lg mb-1">${rank}</span>${feedback}`;
-            modal.classList.remove('hidden');
+            showModal("拼字成績", g3Score, g3Score === 1000 ? "太強了！完全正確！" : "練習完成！繼續加油！");
         }
 
-        // --- 7. 學習歷程 (Stats) ---
+        // Stats & Utils
         function updateStats() {
             document.getElementById('stat-learned').textContent = userData.learned.length;
             document.getElementById('stat-speech').textContent = userData.speechCount;
-            renderLearnedWords(); 
+            renderLearnedWords();
         }
-
         function renderLearnedWords() {
             const container = document.getElementById('learned-word-list');
-            if (!container) return;
             container.innerHTML = '';
-
             if (userData.learned.length === 0) {
-                container.innerHTML = '<span class="text-gray-400 text-sm py-2">尚未開始學習，快去單字卡區翻翻看吧！</span>';
+                container.innerHTML = '<span class="text-slate-400 text-sm py-2">目前還沒學會任何單字，快去練習吧！</span>';
                 return;
             }
-
-            const learnedItems = vocabData
-                .filter(item => userData.learned.includes(item.id))
-                .sort((a, b) => a.id - b.id);
-            
-            learnedItems.forEach(item => {
+            vocabData.filter(item => userData.learned.includes(item.id)).sort((a,b)=>a.id-b.id).forEach(item => {
                 const el = document.createElement('span');
-                el.className = "inline-flex items-center px-3 py-1.5 rounded-lg text-sm bg-teal-50 text-teal-800 border border-teal-100 hover:bg-teal-100 transition shadow-sm";
-                el.innerHTML = `
-                    <span class="font-bold mr-2">${item.word}</span>
-                    <span class="text-xs text-gray-500 border-l border-teal-200 pl-2">${item.meaning}</span>
-                `;
+                el.className = "inline-flex items-center px-3 py-1.5 rounded text-xs bg-slate-900 text-cyan-300 border border-cyan-800";
+                el.innerHTML = `<span class="font-bold mr-2">${item.word}</span><span class="text-slate-500 border-l border-slate-700 pl-2">${item.meaning}</span>`;
                 container.appendChild(el);
             });
         }
-
         function renderHistory() {
             const list = document.getElementById('history-list');
             list.innerHTML = '';
-            
-            if (userData.history.length === 0) {
-                list.innerHTML = '<li class="text-gray-400 text-center py-4">目前尚無紀錄，快去練習吧！</li>';
-                return;
-            }
-
             userData.history.slice(0, 10).forEach(h => {
                 const li = document.createElement('li');
-                li.className = "flex justify-between items-center py-2 border-b border-gray-50 last:border-0";
-                li.innerHTML = `
-                    <span class="text-gray-700 font-medium">${h.action}</span>
-                    <span class="text-xs text-gray-400">${h.date}</span>
-                `;
+                li.className = "flex justify-between items-center py-2 border-b border-white/10 last:border-0";
+                li.innerHTML = `<span class="text-slate-200">${h.action}</span><span class="text-xs text-slate-400">${h.date}</span>`;
                 list.appendChild(li);
             });
         }
-
         function resetProgress() {
-            if(confirm("確定要清除所有學習與發音紀錄嗎？無法復原喔！")) {
+            if(confirm("確定要刪除所有進度嗎？(無法復原)")) {
                 userData = { learned: [], speechCount: 0, history: [] };
-                saveData();
-                renderCard();
-                updateStats(); 
-                renderHistory();
+                saveData(); renderCard(); updateStats(); renderHistory();
             }
         }
-
+        function showModal(label, value, feedback) {
+            const modal = document.getElementById('game-modal');
+            document.getElementById('modal-label').textContent = label;
+            document.getElementById('modal-value').textContent = value;
+            document.getElementById('modal-feedback').textContent = feedback;
+            modal.classList.remove('hidden');
+        }
     </script>
 </body>
 </html>

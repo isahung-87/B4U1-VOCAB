@@ -88,6 +88,17 @@
         .custom-scrollbar::-webkit-scrollbar { width: 4px; }
         .custom-scrollbar::-webkit-scrollbar-track { background: rgba(0,0,0,0.1); }
         .custom-scrollbar::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.2); border-radius: 2px; }
+        
+        /* 新增：隱藏主畫面右側捲軸 (App 質感) */
+        #app-container::-webkit-scrollbar {
+            display: none; /* Chrome, Safari, Opera */
+        }
+        #app-container {
+            -ms-overflow-style: none;  /* IE and Edge */
+            scrollbar-width: none;  /* Firefox */
+        }
+        
+        /* 移除舊的 stage-tab 樣式，改用 Tailwind 直接控制 */
     </style>
 </head>
 <body class="h-screen flex flex-col overflow-hidden">
@@ -121,14 +132,27 @@
         <!-- 頁面 1: 單字卡學習 -->
         <section id="page-learn" class="flex flex-col items-center justify-start min-h-full space-y-4">
             
+            <!-- 優化版：階段切換選單 (膠囊式切換器) -->
+            <div class="w-full max-w-md bg-black/40 p-1 rounded-xl border border-white/10 flex mb-2 relative z-0">
+                <button onclick="setStage(1)" id="tab-stage-1" class="flex-1 py-3 rounded-lg text-xs font-bold transition-all duration-300 relative z-10 flex items-center justify-center gap-2 bg-gradient-to-r from-cyan-600 to-blue-600 text-white shadow-lg border border-cyan-400">
+                    <i class="fas fa-flag"></i> 第一階段 (1-15)
+                </button>
+                <button onclick="setStage(2)" id="tab-stage-2" class="flex-1 py-3 rounded-lg text-xs font-bold transition-all duration-300 relative z-10 flex items-center justify-center gap-2 text-slate-400 hover:text-white hover:bg-white/5">
+                    <i class="fas fa-flag-checkered"></i> 第二階段 (16-28)
+                </button>
+            </div>
+
             <!-- 進度顯示 -->
             <div class="w-full max-w-md bg-black/20 p-3 rounded-xl border border-white/10 backdrop-blur-sm">
                 <div class="flex justify-between items-end mb-2">
                     <div class="text-xs font-bold text-cyan-300 flex items-center gap-2">
-                        <span class="bg-cyan-900/50 px-2 rounded text-[10px]">LV.</span>
-                        <span id="progress-text" class="font-num text-sm">1 / 28</span>
+                        <span class="bg-cyan-900/50 px-2 rounded text-[10px]">進度</span>
+                        <span id="progress-text" class="font-num text-sm">1 / 15</span>
                     </div>
-                    <span class="text-[10px] text-indigo-200">Progress</span>
+                    <!-- 自動學習標記 -->
+                    <span id="learned-badge" class="hidden text-green-400 bg-green-900/50 px-2 py-0.5 rounded text-[10px] border border-green-500/50 ml-1 animate-pop">
+                        <i class="fas fa-check"></i> 已學習
+                    </span>
                 </div>
                 
                 <div class="w-full bg-slate-800 rounded-full h-2 overflow-hidden border border-slate-600 relative">
@@ -138,7 +162,7 @@
             </div>
 
             <!-- 單字卡 (高度自適應) -->
-            <div class="relative w-full max-w-md aspect-[3/4] max-h-[60vh] perspective-1000 group cursor-pointer select-none" onclick="flipCard()">
+            <div class="relative w-full max-w-md aspect-[3/4] max-h-[55vh] perspective-1000 group cursor-pointer select-none" onclick="flipCard()">
                 <div id="flashcard-inner" class="relative w-full h-full text-center transition-all duration-500 transform-style-3d">
                     
                     <!-- 正面 -->
@@ -146,8 +170,8 @@
                         <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-cyan-400 to-transparent"></div>
                         <span id="card-pos-front" class="absolute top-4 right-4 text-xs font-bold bg-slate-800 text-cyan-400 px-2 py-1 rounded border border-cyan-500/30 font-num">pos</span>
                         <h2 id="card-word" class="text-3xl sm:text-4xl font-bold text-white mb-6 tracking-wide drop-shadow-lg font-cute break-words max-w-full">word</h2>
-                        <button onclick="event.stopPropagation(); playAudio()" class="w-14 h-14 rounded-full bg-cyan-500/20 text-cyan-300 hover:bg-cyan-500 hover:text-white border border-cyan-400/50 flex items-center justify-center transition-all shadow-[0_0_15px_rgba(6,182,212,0.4)] active:scale-95 touch-manipulation">
-                            <i class="fas fa-volume-up text-xl"></i>
+                        <button onclick="event.stopPropagation(); playAudio()" class="w-16 h-16 rounded-full bg-cyan-500/20 text-cyan-300 hover:bg-cyan-500 hover:text-white border border-cyan-400/50 flex items-center justify-center transition-all shadow-[0_0_15px_rgba(6,182,212,0.4)] active:scale-95 touch-manipulation">
+                            <i class="fas fa-volume-up text-2xl"></i>
                         </button>
                         <p class="text-cyan-200/50 text-xs mt-8 animate-pulse flex items-center gap-1">
                             <i class="fas fa-hand-pointer"></i> 點擊翻轉
@@ -167,8 +191,8 @@
                 </div>
             </div>
 
-            <!-- 控制面板 -->
-            <div class="w-full max-w-md grid grid-cols-3 gap-2">
+            <!-- 控制面板 (3欄式) -->
+            <div class="w-full max-w-md grid grid-cols-3 gap-3">
                 <button onclick="prevWord()" class="rpg-btn py-3 rounded-lg bg-indigo-600 text-white hover:bg-indigo-500 border-indigo-800 flex flex-col items-center justify-center gap-1">
                     <i class="fas fa-chevron-left text-sm"></i> <span class="text-[10px] sm:text-xs font-bold">上一個</span>
                 </button>
@@ -185,7 +209,7 @@
             </div>
             
             <!-- 播放錄音按鈕 (預設隱藏) -->
-            <button id="play-user-audio-btn" onclick="playUserAudio()" class="hidden mt-3 w-full max-w-md py-2 bg-gradient-to-r from-pink-600 to-purple-600 text-white border border-pink-400 rounded-full text-sm font-bold hover:from-pink-500 hover:to-purple-500 transition items-center justify-center gap-2 shadow-[0_0_15px_#db2777] animate-pop">
+            <button id="play-user-audio-btn" onclick="playUserAudio()" class="hidden mt-2 w-full max-w-md py-2 bg-gradient-to-r from-pink-600 to-purple-600 text-white border border-pink-400 rounded-full text-sm font-bold hover:from-pink-500 hover:to-purple-500 transition items-center justify-center gap-2 shadow-[0_0_15px_#db2777] animate-pop">
                 <i class="fas fa-play-circle"></i> 播放我的錄音
             </button>
             
@@ -291,7 +315,7 @@
                 <div class="bg-slate-800/80 rounded-xl border border-white/10 overflow-hidden mb-6 backdrop-blur-sm">
                     <div class="bg-cyan-900/40 px-4 py-3 border-b border-cyan-500/30 font-bold text-cyan-300 flex justify-between items-center text-sm">
                         <span><i class="fas fa-book-open mr-2"></i> 已學習單字</span>
-                        <span class="text-[10px] text-cyan-200/60 font-normal border border-cyan-500/30 px-2 rounded">自動記錄</span>
+                        <span class="text-[10px] text-cyan-200/60 font-normal border border-cyan-500/30 px-2 rounded">翻卡2次+聽1次</span>
                     </div>
                     <div class="p-4 max-h-48 overflow-y-auto custom-scrollbar bg-black/20">
                         <div id="learned-word-list" class="flex flex-wrap gap-2"></div>
@@ -367,38 +391,41 @@
 
     <!-- JavaScript 邏輯 -->
     <script>
-        // 資料庫 (已合併詞性與解釋)
+        // 資料庫
         const vocabData = [
-            { id: 1, word: "individual", pos: "adj. / n. [C]", meaning: "個別的 / 個人" },
-            { id: 2, word: "record", pos: "vt.; vi. / n. [C]", meaning: "錄影；錄音；記錄 / 紀錄" },
-            { id: 3, word: "rearrange", pos: "vt.", meaning: "重新安排；重新布置" },
-            { id: 4, word: "arrange", pos: "vt.", meaning: "安排；布置" },
-            { id: 5, word: "seize", pos: "vt.", meaning: "把握；抓住" },
-            { id: 6, word: "intensive", pos: "adj.", meaning: "密集的" },
-            { id: 7, word: "typical", pos: "adj.", meaning: "典型的" },
-            { id: 8, word: "routine", pos: "n. [C][U]", meaning: "例行公事；日常作息" },
-            { id: 9, word: "professional", pos: "adj.", meaning: "職業的；專業的" },
-            { id: 10, word: "electronic", pos: "adj.", meaning: "電子的" },
-            { id: 11, word: "advance", pos: "vt.; vi. / n. [C][U]", meaning: "進步；進展" },
-            { id: 12, word: "sufficient", pos: "adj.", meaning: "足夠的" },
-            { id: 13, word: "equipment", pos: "n. [U]", meaning: "設備；裝備" },
-            { id: 14, word: "equip", pos: "vt.", meaning: "配備；裝備" },
-            { id: 15, word: "ideal", pos: "adj.", meaning: "理想的" },
-            { id: 16, word: "broadcast", pos: "vt.; vi. / n. [C]", meaning: "播送；廣播 / 節目" },
-            { id: 17, word: "global", pos: "adj.", meaning: "全球的；全世界的" },
-            { id: 18, word: "overseas", pos: "adv.", meaning: "在海外" },
-            { id: 19, word: "sacrifice", pos: "vt. / n. [C][U]", meaning: "犧牲" },
-            { id: 20, word: "imagine", pos: "vt.", meaning: "想像" },
-            { id: 21, word: "imagination", pos: "n. [C][U]", meaning: "想像力" },
-            { id: 22, word: "have no choice but to", pos: "phr.", meaning: "不得不" },
-            { id: 23, word: "make it up to sb", pos: "phr.", meaning: "補償某人" },
-            { id: 24, word: "stand for", pos: "phr.", meaning: "代表" },
-            { id: 25, word: "key to", pos: "phr.", meaning: "……的關鍵" },
-            { id: 26, word: "make a living", pos: "phr.", meaning: "謀生" },
-            { id: 27, word: "as a matter of fact", pos: "phr.", meaning: "事實上；其實" },
-            { id: 28, word: "at least", pos: "phr.", meaning: "至少" }
+            // Stage 1: 1-15
+            { id: 1, stage: 1, word: "individual", pos: "adj. / n. [C]", meaning: "個別的 / 個人" },
+            { id: 2, stage: 1, word: "record", pos: "vt.; vi. / n. [C]", meaning: "錄影；錄音；記錄 / 紀錄" },
+            { id: 3, stage: 1, word: "rearrange", pos: "vt.", meaning: "重新安排；重新布置" },
+            { id: 4, stage: 1, word: "arrange", pos: "vt.", meaning: "安排；布置" },
+            { id: 5, stage: 1, word: "seize", pos: "vt.", meaning: "把握；抓住" },
+            { id: 6, stage: 1, word: "intensive", pos: "adj.", meaning: "密集的" },
+            { id: 7, stage: 1, word: "typical", pos: "adj.", meaning: "典型的" },
+            { id: 8, stage: 1, word: "routine", pos: "n. [C][U]", meaning: "例行公事；日常作息" },
+            { id: 9, stage: 1, word: "professional", pos: "adj.", meaning: "職業的；專業的" },
+            { id: 10, stage: 1, word: "electronic", pos: "adj.", meaning: "電子的" },
+            { id: 11, stage: 1, word: "advance", pos: "vt.; vi. / n. [C][U]", meaning: "進步；進展" },
+            { id: 12, stage: 1, word: "sufficient", pos: "adj.", meaning: "足夠的" },
+            { id: 13, stage: 1, word: "equipment", pos: "n. [U]", meaning: "設備；裝備" },
+            { id: 14, stage: 1, word: "equip", pos: "vt.", meaning: "配備；裝備" },
+            { id: 15, stage: 1, word: "ideal", pos: "adj.", meaning: "理想的" },
+            // Stage 2: 16-28
+            { id: 16, stage: 2, word: "broadcast", pos: "vt.; vi. / n. [C]", meaning: "播送；廣播 / 節目" },
+            { id: 17, stage: 2, word: "global", pos: "adj.", meaning: "全球的；全世界的" },
+            { id: 18, stage: 2, word: "overseas", pos: "adv.", meaning: "在海外" },
+            { id: 19, stage: 2, word: "sacrifice", pos: "vt. / n. [C][U]", meaning: "犧牲" },
+            { id: 20, stage: 2, word: "imagine", pos: "vt.", meaning: "想像" },
+            { id: 21, stage: 2, word: "imagination", pos: "n. [C][U]", meaning: "想像力" },
+            { id: 22, stage: 2, word: "have no choice but to", pos: "phr.", meaning: "不得不" },
+            { id: 23, stage: 2, word: "make it up to sb", pos: "phr.", meaning: "補償某人" },
+            { id: 24, stage: 2, word: "stand for", pos: "phr.", meaning: "代表" },
+            { id: 25, stage: 2, word: "key to", pos: "phr.", meaning: "……的關鍵" },
+            { id: 26, stage: 2, word: "make a living", pos: "phr.", meaning: "謀生" },
+            { id: 27, stage: 2, word: "as a matter of fact", pos: "phr.", meaning: "事實上；其實" },
+            { id: 28, stage: 2, word: "at least", pos: "phr.", meaning: "至少" }
         ];
 
+        let currentStage = 1;
         let currentIndex = 0;
         let isFlipped = false;
         
@@ -425,9 +452,35 @@
             });
         };
 
+        // Helpers
+        function getCurrentVocabList() {
+            return vocabData.filter(v => v.stage === currentStage);
+        }
+
+        function setStage(stage) {
+            currentStage = stage;
+            currentIndex = 0;
+            
+            const btn1 = document.getElementById('tab-stage-1');
+            const btn2 = document.getElementById('tab-stage-2');
+            
+            // 定義樣式字串
+            const activeClass = "flex-1 py-3 rounded-lg text-xs font-bold transition-all duration-300 relative z-10 flex items-center justify-center gap-2 bg-gradient-to-r from-cyan-600 to-blue-600 text-white shadow-lg border border-cyan-400 transform scale-105";
+            const inactiveClass = "flex-1 py-3 rounded-lg text-xs font-bold transition-all duration-300 relative z-10 flex items-center justify-center gap-2 text-slate-400 hover:text-white hover:bg-white/5";
+
+            if (stage === 1) {
+                btn1.className = activeClass;
+                btn2.className = inactiveClass;
+            } else {
+                btn1.className = inactiveClass;
+                btn2.className = activeClass;
+            }
+            
+            renderCard();
+        }
+
         // Utils - Sound Effect
         function playSuccessSound() {
-            // 使用 Web Audio API 生成 C大調三和弦 (C-E-G)
             const AudioContext = window.AudioContext || window.webkitAudioContext;
             if (!AudioContext) return;
             const ctx = new AudioContext();
@@ -526,7 +579,8 @@
 
         // --- Flashcard ---
         function renderCard() {
-            const data = vocabData[currentIndex];
+            const list = getCurrentVocabList();
+            const data = list[currentIndex];
             const inner = document.getElementById('flashcard-inner');
             isFlipped = false;
             inner.classList.remove('rotate-y-180');
@@ -537,11 +591,11 @@
             document.getElementById('card-meaning').textContent = data.meaning;
             document.getElementById('card-collocation-box').classList.add('hidden'); 
 
-            document.getElementById('progress-text').textContent = `${currentIndex + 1} / ${vocabData.length}`;
-            const pct = (userData.learned.length / vocabData.length) * 100;
+            document.getElementById('progress-text').textContent = `${currentIndex + 1} / ${list.length}`;
+            const pct = ((currentIndex + 1) / list.length) * 100;
             document.getElementById('progress-bar').style.width = `${pct}%`;
 
-            // Update learned badge
+            // Auto-learned Badge
             const isKnown = userData.learned.includes(data.id);
             const badge = document.getElementById('learned-badge');
             if (isKnown) badge.classList.remove('hidden'); else badge.classList.add('hidden');
@@ -553,7 +607,9 @@
             if (isFlipped) inner.classList.add('rotate-y-180');
             else inner.classList.remove('rotate-y-180');
 
-            const currentId = vocabData[currentIndex].id;
+            const list = getCurrentVocabList();
+            const currentId = list[currentIndex].id;
+            
             if (!userData.wordStats[currentId]) userData.wordStats[currentId] = { flips: 0, audio: 0 };
             userData.wordStats[currentId].flips++;
             saveData();
@@ -561,11 +617,12 @@
         }
 
         function nextWord() {
-            if (currentIndex < vocabData.length - 1) {
+            const list = getCurrentVocabList();
+            if (currentIndex < list.length - 1) {
                 currentIndex++;
                 renderCard();
             } else {
-                alert("恭喜！已經是最後一個單字囉！");
+                alert("恭喜！本階段單字已瀏覽完畢！");
             }
         }
 
@@ -578,6 +635,7 @@
 
         function checkAutoLearn(id) {
             const stats = userData.wordStats[id];
+            // Auto learn logic: Flips >= 2 AND Audio >= 1
             if (stats && stats.flips >= 2 && stats.audio >= 1) {
                 if (!userData.learned.includes(id)) {
                     userData.learned.push(id);
@@ -588,12 +646,13 @@
         }
 
         function playAudio() {
-            const word = vocabData[currentIndex].word;
+            const list = getCurrentVocabList();
+            const word = list[currentIndex].word;
             const utterance = new SpeechSynthesisUtterance(word);
             utterance.lang = 'en-US'; utterance.rate = 0.9;
             window.speechSynthesis.speak(utterance);
 
-            const currentId = vocabData[currentIndex].id;
+            const currentId = list[currentIndex].id;
             if (!userData.wordStats[currentId]) userData.wordStats[currentId] = { flips: 0, audio: 0 };
             userData.wordStats[currentId].audio++;
             saveData();
@@ -617,7 +676,8 @@
 
             recognition.onresult = function(event) {
                 const transcript = event.results[0][0].transcript;
-                const targetWord = vocabData[currentIndex].word;
+                const list = getCurrentVocabList();
+                const targetWord = list[currentIndex].word;
                 evaluatePronunciation(transcript, targetWord);
                 stopRecordingUI();
             };
@@ -640,10 +700,6 @@
             if (!recognition) { 
                 alert("您的瀏覽器不支援語音辨識。\niOS 用戶：請嘗試使用 Chrome App 並允許麥克風權限。\nAndroid 用戶：請使用 Chrome。"); 
                 return; 
-            }
-
-            if (location.protocol !== 'https:' && location.hostname !== 'localhost' && location.protocol !== 'file:') {
-               // warning only
             }
 
             const btn = document.getElementById('record-btn');
@@ -716,8 +772,8 @@
             if (similarity >= 0.9) {
                 msg = "Excellent! (真棒!)";
                 styleClass = "text-green-300 bg-black/40 px-3 py-1 rounded border border-green-500/50 shadow-[0_0_10px_#22c55e]";
-                playSuccessSound(); // Play success sound
-                const currentId = vocabData[currentIndex].id;
+                playSuccessSound(); 
+                const currentId = getCurrentVocabList()[currentIndex].id;
                 userData.speechCount++;
                 if (!userData.spoken) userData.spoken = [];
                 if (!userData.spoken.includes(currentId)) userData.spoken.push(currentId);
@@ -725,8 +781,8 @@
             } else if (similarity >= 0.6) {
                 msg = `Good! (${cleanSpoken})`;
                 styleClass = "text-cyan-300 bg-black/40 px-3 py-1 rounded border border-cyan-500/50";
-                playSuccessSound(); // Play success sound
-                const currentId = vocabData[currentIndex].id;
+                playSuccessSound(); 
+                const currentId = getCurrentVocabList()[currentIndex].id;
                 userData.speechCount++;
                 if (!userData.spoken) userData.spoken = [];
                 if (!userData.spoken.includes(currentId)) userData.spoken.push(currentId);
@@ -760,24 +816,30 @@
         function startLevel1(){
             g1Score=0; g1Index=0;
             document.getElementById('g1-score').textContent=g1Score;
-            g1Questions = shuffleArray([...vocabData]).slice(0,10);
+            // Use current stage vocab for games
+            const list = getCurrentVocabList();
+            g1Questions = shuffleArray([...list]).slice(0,10);
             nextQuestionG1();
         }
         function nextQuestionG1(){
             if(g1Index>=g1Questions.length){endLevel1();return;}
-            document.getElementById('g1-progress').textContent=`${g1Index+1}/10`;
+            document.getElementById('g1-progress').textContent=`${g1Index+1}/${g1Questions.length}`;
             document.getElementById('g1-feedback').textContent="";
             g1CurrentItem=g1Questions[g1Index];
             document.getElementById('g1-question').textContent=g1CurrentItem.word;
             document.getElementById('g1-pos').textContent=g1CurrentItem.pos;
+            
+            // Options from same stage preferably
+            let list = getCurrentVocabList();
             let opts=[g1CurrentItem.meaning];
-            let tempVocab = [...vocabData]; 
+            let tempVocab = [...list]; 
             shuffleArray(tempVocab);
             for(let item of tempVocab) {
                 if(opts.length >= 4) break;
                 if(!opts.includes(item.meaning)) opts.push(item.meaning);
             }
             shuffleArray(opts);
+            
             const c=document.getElementById('g1-options');
             c.innerHTML='';
             opts.forEach(o=>{
@@ -815,15 +877,39 @@
             }
         }
         function endLevel1(){userData.history.unshift({date:new Date().toLocaleDateString(),action:`眼明手快 得分:${g1Score}`});saveData();showModal("得分",g1Score,"不錯喔!");}
+        
         // Level 2
         let g2Selected=[], g2Matches=0, g2TimerInterval, g2StartTime; const G2_PAIRS=6;
-        function startLevel2(){g2Matches=0;document.getElementById('g2-left').textContent=G2_PAIRS;clearInterval(g2TimerInterval);g2StartTime=Date.now();document.getElementById('g2-timer').textContent="00:00";g2TimerInterval=setInterval(()=>{let e=Math.floor((Date.now()-g2StartTime)/1000);document.getElementById('g2-timer').textContent=`${Math.floor(e/60).toString().padStart(2,'0')}:${(e%60).toString().padStart(2,'0')}`},1000);let d=[];shuffleArray([...vocabData]).slice(0,G2_PAIRS).forEach((i,idx)=>{d.push({id:idx,type:'word',content:`${i.word}\n(${i.pos})`,matchId:idx});d.push({id:idx,type:'meaning',content:i.meaning,matchId:idx})});shuffleArray(d);const g=document.getElementById('g2-grid');g.innerHTML='';d.forEach(c=>{let e=document.createElement('div');e.className="game-card bg-slate-800/80 border-2 border-purple-500/30 rounded h-24 flex items-center justify-center p-2 text-center text-sm font-bold text-purple-200 shadow-sm hover:bg-purple-900/50 cursor-pointer whitespace-pre-line backdrop-blur-sm";e.textContent=c.content;e.onclick=()=>selectG2Card(e,c);g.appendChild(e)})}
+        function startLevel2(){
+            g2Matches=0;
+            document.getElementById('g2-left').textContent=G2_PAIRS;
+            clearInterval(g2TimerInterval);
+            g2StartTime=Date.now();
+            document.getElementById('g2-timer').textContent="00:00";
+            g2TimerInterval=setInterval(()=>{let e=Math.floor((Date.now()-g2StartTime)/1000);document.getElementById('g2-timer').textContent=`${Math.floor(e/60).toString().padStart(2,'0')}:${(e%60).toString().padStart(2,'0')}`},1000);
+            
+            const list = getCurrentVocabList();
+            // Ensure enough words, otherwise repeat or pick from all
+            let source = list.length >= G2_PAIRS ? list : vocabData;
+            
+            let d=[];
+            shuffleArray([...source]).slice(0,G2_PAIRS).forEach((i,idx)=>{d.push({id:idx,type:'word',content:`${i.word}\n(${i.pos})`,matchId:idx});d.push({id:idx,type:'meaning',content:i.meaning,matchId:idx})});shuffleArray(d);
+            
+            const g=document.getElementById('g2-grid');g.innerHTML='';d.forEach(c=>{let e=document.createElement('div');e.className="game-card bg-slate-800/80 border-2 border-purple-500/30 rounded h-24 flex items-center justify-center p-2 text-center text-sm font-bold text-purple-200 shadow-sm hover:bg-purple-900/50 cursor-pointer whitespace-pre-line backdrop-blur-sm";e.textContent=c.content;e.onclick=()=>selectG2Card(e,c);g.appendChild(e)});
+        }
         function selectG2Card(e,c){if(e.classList.contains('opacity-0')||g2Selected.some(s=>s.e===e)||g2Selected.length>=2)return;e.className="game-card bg-purple-600 border-2 border-white rounded h-24 flex items-center justify-center p-2 text-center text-sm font-bold text-white shadow-[0_0_15px_#a855f7] scale-105 whitespace-pre-line";g2Selected.push({e,c});if(g2Selected.length===2){let[f,s]=g2Selected;if(f.c.matchId===s.c.matchId&&f.c.type!==s.c.type){setTimeout(()=>{f.e.classList.add('opacity-0','pointer-events-none');s.e.classList.add('opacity-0','pointer-events-none');g2Matches++;document.getElementById('g2-left').textContent=G2_PAIRS-g2Matches;g2Selected=[];playSuccessSound(); // Play success sound
         if(g2Matches===G2_PAIRS){clearInterval(g2TimerInterval);let t=Math.floor((Date.now()-g2StartTime)/1000);userData.history.unshift({date:new Date().toLocaleDateString(),action:`記憶配對 耗時:${t}s`});saveData();showModal("耗時",`${t}s`,"恭喜!");}},300)}else{setTimeout(()=>{[f,s].forEach(i=>i.e.className="game-card bg-slate-800/80 border-2 border-purple-500/30 rounded h-24 flex items-center justify-center p-2 text-center text-sm font-bold text-purple-200 shadow-sm hover:bg-purple-900/50 cursor-pointer whitespace-pre-line backdrop-blur-sm");g2Selected=[]},600)}}}
+        
         // Level 3
         let g3Score=0,g3Q=[],g3Idx=0,g3Item;
-        function startLevel3(){g3Score=0;g3Idx=0;document.getElementById('g3-score').textContent=0;g3Q=shuffleArray([...vocabData]).slice(0,5);nextG3();}
-        function nextG3(){if(g3Idx>=g3Q.length){endLevel3();return;}document.getElementById('g3-progress').textContent=`${g3Idx+1}/5`;document.getElementById('g3-feedback').textContent="";g3Item=g3Q[g3Idx];document.getElementById('g3-pos').textContent=g3Item.pos;document.getElementById('g3-meaning').textContent=g3Item.meaning;let i=document.getElementById('g3-input');i.value="";i.disabled=false;i.className="w-full px-4 py-3 text-lg bg-slate-900 border-2 border-slate-600 rounded-lg text-white text-center font-bold font-cute";i.focus();}
+        function startLevel3(){
+            g3Score=0;g3Idx=0;
+            document.getElementById('g3-score').textContent=0;
+            const list = getCurrentVocabList();
+            g3Q=shuffleArray([...list]).slice(0,5);
+            nextG3();
+        }
+        function nextG3(){if(g3Idx>=g3Q.length){endLevel3();return;}document.getElementById('g3-progress').textContent=`${g3Idx+1}/${g3Q.length}`;document.getElementById('g3-feedback').textContent="";g3Item=g3Q[g3Idx];document.getElementById('g3-pos').textContent=g3Item.pos;document.getElementById('g3-meaning').textContent=g3Item.meaning;let i=document.getElementById('g3-input');i.value="";i.disabled=false;i.className="w-full px-4 py-3 text-lg bg-slate-900 border-2 border-slate-600 rounded-lg text-white text-center font-bold font-cute";i.focus();}
         function checkAnswerG3(){let i=document.getElementById('g3-input');if(i.disabled)return;let v=i.value.trim().toLowerCase();i.disabled=true;if(v===g3Item.word.toLowerCase()){g3Score+=200;document.getElementById('g3-score').textContent=g3Score;playSuccessSound(); // Play success sound
         i.className="w-full px-4 py-3 text-lg bg-green-900/50 border-2 border-green-500 rounded-lg text-green-300 text-center font-bold font-cute";document.getElementById('g3-feedback').innerHTML=`<span class="text-green-300">正確!</span>`;setTimeout(()=>{g3Idx++;nextG3()},1000)}else{i.className="w-full px-4 py-3 text-lg bg-red-900/50 border-2 border-red-500 rounded-lg text-red-300 text-center font-bold font-cute shake";document.getElementById('g3-feedback').innerHTML=`<span class="text-red-300">答案: ${g3Item.word}</span>`;setTimeout(()=>{i.classList.remove('shake')},500);setTimeout(()=>{g3Idx++;nextG3()},2000)}}
         function endLevel3(){userData.history.unshift({date:new Date().toLocaleDateString(),action:`拼字大師 得分:${g3Score}`});saveData();showModal("得分",g3Score,"完成!");}

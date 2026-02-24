@@ -2,7 +2,6 @@
 <html lang="zh-TW">
 <head>
     <meta charset="UTF-8">
-    <!-- 加入 viewport-fit=cover 以適配 iPhone 瀏海屏 -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>單字複習網站 | B4 Unit 1</title>
     <!-- 引入 Tailwind CSS -->
@@ -14,25 +13,18 @@
     
     <style>
         body {
-            /* 動漫風格背景 */
             background: linear-gradient(135deg, #1e1b4b 0%, #312e81 50%, #4c1d95 100%);
             font-family: 'Noto Sans TC', sans-serif;
             color: #fff;
-            touch-action: manipulation; /* 優化觸控反應 */
+            touch-action: manipulation;
             background-attachment: fixed;
             -webkit-tap-highlight-color: transparent;
         }
 
-        /* iOS 底部安全區域設定 */
-        .pb-safe {
-            padding-bottom: env(safe-area-inset-bottom);
-        }
-
-        /* 字體設定 */
+        .pb-safe { padding-bottom: env(safe-area-inset-bottom); }
         .font-num { font-family: 'Orbitron', sans-serif; }
         .font-cute { font-family: 'Zen Maru Gothic', sans-serif; }
 
-        /* 玻璃擬態 */
         .glass-panel {
             background: rgba(255, 255, 255, 0.1);
             backdrop-filter: blur(12px);
@@ -41,7 +33,6 @@
             box-shadow: 0 -4px 30px rgba(0, 0, 0, 0.3);
         }
 
-        /* RPG 按鈕 - 加大觸控區 */
         .rpg-btn {
             position: relative;
             transition: all 0.1s;
@@ -53,23 +44,18 @@
             border-bottom: 1px solid transparent;
         }
 
-        /* 翻轉特效 */
         .perspective-1000 { perspective: 1000px; }
         .transform-style-3d { transform-style: preserve-3d; }
         .backface-hidden { backface-visibility: hidden; }
         .rotate-y-180 { transform: rotateY(180deg); }
 
-        /* 錄音波紋 */
-        .recording-pulse {
-            animation: pulse-ring 1.5s cubic-bezier(0.215, 0.61, 0.355, 1) infinite;
-        }
+        .recording-pulse { animation: pulse-ring 1.5s cubic-bezier(0.215, 0.61, 0.355, 1) infinite; }
         @keyframes pulse-ring {
             0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(236, 72, 153, 0.7); }
             70% { transform: scale(1); box-shadow: 0 0 0 15px rgba(236, 72, 153, 0); }
             100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(236, 72, 153, 0); }
         }
 
-        /* 動畫 */
         @keyframes pop-in {
             0% { transform: scale(0.8); opacity: 0; }
             100% { transform: scale(1); opacity: 1; }
@@ -84,26 +70,19 @@
             40%, 60% { transform: translate3d(4px, 0, 0); }
         }
 
-        /* 隱藏捲軸但保留功能 */
         .custom-scrollbar::-webkit-scrollbar { width: 4px; }
         .custom-scrollbar::-webkit-scrollbar-track { background: rgba(0,0,0,0.1); }
         .custom-scrollbar::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.2); border-radius: 2px; }
         
-        /* 新增：隱藏主畫面右側捲軸 (App 質感) */
-        #app-container::-webkit-scrollbar {
-            display: none; /* Chrome, Safari, Opera */
-        }
+        #app-container::-webkit-scrollbar { display: none; }
         #app-container {
-            -ms-overflow-style: none;  /* IE and Edge */
-            scrollbar-width: none;  /* Firefox */
+            -ms-overflow-style: none;
+            scrollbar-width: none;
         }
-        
-        /* 移除舊的 stage-tab 樣式，改用 Tailwind 直接控制 */
     </style>
 </head>
 <body class="h-screen flex flex-col overflow-hidden">
 
-    <!-- 頂部狀態列 -->
     <header class="glass-panel z-10 border-b border-white/10 shrink-0">
         <div class="max-w-4xl mx-auto px-4 py-3 flex justify-between items-center">
             <div class="flex items-center gap-3">
@@ -126,15 +105,12 @@
         </div>
     </header>
 
-    <!-- 主要內容區 -->
     <main class="flex-1 overflow-y-auto relative w-full max-w-4xl mx-auto p-4 pb-24" id="app-container">
         
-        <!-- 頁面 1: 單字卡學習 -->
         <section id="page-learn" class="flex flex-col items-center justify-start min-h-full space-y-4">
             
-            <!-- 優化版：階段切換選單 (膠囊式切換器) -->
             <div class="w-full max-w-md bg-black/40 p-1 rounded-xl border border-white/10 flex mb-2 relative z-0">
-                <button onclick="setStage(1)" id="tab-stage-1" class="flex-1 py-3 rounded-lg text-xs font-bold transition-all duration-300 relative z-10 flex items-center justify-center gap-2 bg-gradient-to-r from-cyan-600 to-blue-600 text-white shadow-lg border border-cyan-400">
+                <button onclick="setStage(1)" id="tab-stage-1" class="flex-1 py-3 rounded-lg text-xs font-bold transition-all duration-300 relative z-10 flex items-center justify-center gap-2 bg-gradient-to-r from-cyan-600 to-blue-600 text-white shadow-lg border border-cyan-400 transform scale-105">
                     <i class="fas fa-flag"></i> 第一階段 (1-15)
                 </button>
                 <button onclick="setStage(2)" id="tab-stage-2" class="flex-1 py-3 rounded-lg text-xs font-bold transition-all duration-300 relative z-10 flex items-center justify-center gap-2 text-slate-400 hover:text-white hover:bg-white/5">
@@ -142,14 +118,12 @@
                 </button>
             </div>
 
-            <!-- 進度顯示 -->
             <div class="w-full max-w-md bg-black/20 p-3 rounded-xl border border-white/10 backdrop-blur-sm">
                 <div class="flex justify-between items-end mb-2">
                     <div class="text-xs font-bold text-cyan-300 flex items-center gap-2">
                         <span class="bg-cyan-900/50 px-2 rounded text-[10px]">進度</span>
                         <span id="progress-text" class="font-num text-sm">1 / 15</span>
                     </div>
-                    <!-- 自動學習標記 -->
                     <span id="learned-badge" class="hidden text-green-400 bg-green-900/50 px-2 py-0.5 rounded text-[10px] border border-green-500/50 ml-1 animate-pop">
                         <i class="fas fa-check"></i> 已學習
                     </span>
@@ -161,11 +135,9 @@
                 </div>
             </div>
 
-            <!-- 單字卡 (高度自適應) -->
             <div class="relative w-full max-w-md aspect-[3/4] max-h-[55vh] perspective-1000 group cursor-pointer select-none" onclick="flipCard()">
                 <div id="flashcard-inner" class="relative w-full h-full text-center transition-all duration-500 transform-style-3d">
                     
-                    <!-- 正面 -->
                     <div class="absolute w-full h-full bg-slate-900/90 backdrop-blur-xl rounded-2xl backface-hidden flex flex-col items-center justify-center border-2 border-cyan-500/50 shadow-[0_0_30px_rgba(6,182,212,0.2)] p-6">
                         <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-cyan-400 to-transparent"></div>
                         <span id="card-pos-front" class="absolute top-4 right-4 text-xs font-bold bg-slate-800 text-cyan-400 px-2 py-1 rounded border border-cyan-500/30 font-num">pos</span>
@@ -178,7 +150,6 @@
                         </p>
                     </div>
 
-                    <!-- 背面 -->
                     <div class="absolute w-full h-full bg-slate-900/90 backdrop-blur-xl rounded-2xl backface-hidden rotate-y-180 flex flex-col items-center justify-center border-2 border-pink-500/50 shadow-[0_0_30px_rgba(236,72,153,0.2)] px-6">
                         <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-pink-400 to-transparent"></div>
                         <span id="card-pos-back" class="inline-block bg-pink-900/50 text-pink-300 text-xs px-2 py-1 rounded mb-3 border border-pink-500/30 font-num">pos</span>
@@ -191,7 +162,6 @@
                 </div>
             </div>
 
-            <!-- 控制面板 (3欄式) -->
             <div class="w-full max-w-md grid grid-cols-3 gap-3">
                 <button onclick="prevWord()" class="rpg-btn py-3 rounded-lg bg-indigo-600 text-white hover:bg-indigo-500 border-indigo-800 flex flex-col items-center justify-center gap-1">
                     <i class="fas fa-chevron-left text-sm"></i> <span class="text-[10px] sm:text-xs font-bold">上一個</span>
@@ -208,7 +178,6 @@
                 <span class="text-xs sm:text-sm font-bold text-white/50 bg-black/20 px-4 py-1 rounded-full backdrop-blur-sm border border-white/5 truncate">點擊「跟讀」開始練習</span>
             </div>
             
-            <!-- 播放錄音按鈕 (預設隱藏) -->
             <button id="play-user-audio-btn" onclick="playUserAudio()" class="hidden mt-2 w-full max-w-md py-2 bg-gradient-to-r from-pink-600 to-purple-600 text-white border border-pink-400 rounded-full text-sm font-bold hover:from-pink-500 hover:to-purple-500 transition items-center justify-center gap-2 shadow-[0_0_15px_#db2777] animate-pop">
                 <i class="fas fa-play-circle"></i> 播放我的錄音
             </button>
@@ -223,7 +192,6 @@
                 </h2>
                 
                 <div id="game-menu" class="grid grid-cols-1 gap-4">
-                    <!-- Levels -->
                     <div onclick="startGame(1)" class="group bg-slate-800/80 p-4 rounded-xl border-l-4 border-cyan-400 hover:bg-slate-700 cursor-pointer transition relative overflow-hidden shadow-lg flex items-center">
                         <div class="bg-cyan-500 w-12 h-12 rounded-lg flex items-center justify-center text-white text-xl shadow-lg mr-4 shrink-0"><i class="fas fa-bolt"></i></div>
                         <div>
@@ -247,7 +215,6 @@
                     </div>
                 </div>
 
-                <!-- 遊戲區塊 Level 1 -->
                 <div id="game-level-1" class="hidden w-full">
                      <div class="flex justify-between items-center mb-4 bg-black/30 p-3 rounded-lg border border-white/10">
                          <div class="flex gap-4 text-sm">
@@ -264,7 +231,6 @@
                      <div id="g1-feedback" class="mt-4 text-center font-bold h-6"></div>
                 </div>
 
-                <!-- 遊戲區塊 Level 2 -->
                 <div id="game-level-2" class="hidden w-full">
                      <div class="flex justify-between items-center mb-4 bg-black/30 p-3 rounded-lg border border-white/10">
                          <span class="text-purple-300 text-sm font-bold">剩: <span id="g2-left" class="text-white font-num">6</span></span>
@@ -274,7 +240,6 @@
                      <div id="g2-grid" class="grid grid-cols-3 gap-2 sm:gap-3"></div>
                 </div>
 
-                <!-- 遊戲區塊 Level 3 -->
                 <div id="game-level-3" class="hidden w-full">
                      <div class="flex justify-between items-center mb-4 bg-black/30 p-3 rounded-lg border border-white/10">
                          <div class="flex gap-4 text-sm">
@@ -389,11 +354,8 @@
         </div>
     </div>
 
-    <!-- JavaScript 邏輯 -->
     <script>
-        // 資料庫
         const vocabData = [
-            // Stage 1: 1-15
             { id: 1, stage: 1, word: "individual", pos: "adj. / n. [C]", meaning: "個別的 / 個人" },
             { id: 2, stage: 1, word: "record", pos: "vt.; vi. / n. [C]", meaning: "錄影；錄音；記錄 / 紀錄" },
             { id: 3, stage: 1, word: "rearrange", pos: "vt.", meaning: "重新安排；重新布置" },
@@ -409,7 +371,6 @@
             { id: 13, stage: 1, word: "equipment", pos: "n. [U]", meaning: "設備；裝備" },
             { id: 14, stage: 1, word: "equip", pos: "vt.", meaning: "配備；裝備" },
             { id: 15, stage: 1, word: "ideal", pos: "adj.", meaning: "理想的" },
-            // Stage 2: 16-28
             { id: 16, stage: 2, word: "broadcast", pos: "vt.; vi. / n. [C]", meaning: "播送；廣播 / 節目" },
             { id: 17, stage: 2, word: "global", pos: "adj.", meaning: "全球的；全世界的" },
             { id: 18, stage: 2, word: "overseas", pos: "adv.", meaning: "在海外" },
@@ -437,13 +398,7 @@
             wordStats: {} 
         };
 
-        // RWD & Init
         window.onload = () => {
-            if (location.protocol === 'file:' || location.protocol === 'http:') {
-                if(window.innerWidth < 768) {
-                    console.warn("Mobile speech recognition requires HTTPS.");
-                }
-            }
             loadUserData();
             renderCard();
             updateStats();
@@ -452,7 +407,6 @@
             });
         };
 
-        // Helpers
         function getCurrentVocabList() {
             return vocabData.filter(v => v.stage === currentStage);
         }
@@ -460,11 +414,8 @@
         function setStage(stage) {
             currentStage = stage;
             currentIndex = 0;
-            
             const btn1 = document.getElementById('tab-stage-1');
             const btn2 = document.getElementById('tab-stage-2');
-            
-            // 定義樣式字串
             const activeClass = "flex-1 py-3 rounded-lg text-xs font-bold transition-all duration-300 relative z-10 flex items-center justify-center gap-2 bg-gradient-to-r from-cyan-600 to-blue-600 text-white shadow-lg border border-cyan-400 transform scale-105";
             const inactiveClass = "flex-1 py-3 rounded-lg text-xs font-bold transition-all duration-300 relative z-10 flex items-center justify-center gap-2 text-slate-400 hover:text-white hover:bg-white/5";
 
@@ -475,16 +426,13 @@
                 btn1.className = inactiveClass;
                 btn2.className = activeClass;
             }
-            
             renderCard();
         }
 
-        // Utils - Sound Effect
         function playSuccessSound() {
             const AudioContext = window.AudioContext || window.webkitAudioContext;
             if (!AudioContext) return;
             const ctx = new AudioContext();
-            
             const playNote = (freq, time) => {
                 const osc = ctx.createOscillator();
                 const gain = ctx.createGain();
@@ -497,14 +445,12 @@
                 osc.start(time);
                 osc.stop(time + 0.5);
             };
-            
             const now = ctx.currentTime;
-            playNote(523.25, now);       // C5
-            playNote(659.25, now + 0.1); // E5
-            playNote(783.99, now + 0.2); // G5
+            playNote(523.25, now);       
+            playNote(659.25, now + 0.1); 
+            playNote(783.99, now + 0.2); 
         }
 
-        // Utils
         function shuffleArray(array) {
             for (let i = array.length - 1; i > 0; i--) {
                 const j = Math.floor(Math.random() * (i + 1));
@@ -577,7 +523,6 @@
             if(pageId === 'stats') { updateStats(); renderHistory(); }
         }
 
-        // --- Flashcard ---
         function renderCard() {
             const list = getCurrentVocabList();
             const data = list[currentIndex];
@@ -595,7 +540,6 @@
             const pct = ((currentIndex + 1) / list.length) * 100;
             document.getElementById('progress-bar').style.width = `${pct}%`;
 
-            // Auto-learned Badge
             const isKnown = userData.learned.includes(data.id);
             const badge = document.getElementById('learned-badge');
             if (isKnown) badge.classList.remove('hidden'); else badge.classList.add('hidden');
@@ -635,12 +579,11 @@
 
         function checkAutoLearn(id) {
             const stats = userData.wordStats[id];
-            // Auto learn logic: Flips >= 2 AND Audio >= 1
             if (stats && stats.flips >= 2 && stats.audio >= 1) {
                 if (!userData.learned.includes(id)) {
                     userData.learned.push(id);
                     saveData();
-                    renderCard(); // Refresh badge
+                    renderCard();
                 }
             }
         }
@@ -659,7 +602,6 @@
             checkAutoLearn(currentId);
         }
 
-        // --- Speech Recognition ---
         let recognition = null;
         let isRecording = false;
         let mediaRecorder = null;
@@ -686,7 +628,8 @@
                 let msg = "辨識失敗";
                 if(event.error === 'not-allowed') msg = "請允許麥克風權限";
                 if(event.error === 'no-speech') msg = "沒聽到聲音";
-                if(event.error === 'network') msg = "請連接網路";
+                if(event.error === 'network') msg = "請連接網路(Android需連網)";
+                if(event.error === 'audio-capture') msg = "麥克風被佔用";
                 feedback.innerHTML = `<span class="text-red-400 bg-black/40 px-3 py-1 rounded text-xs">${msg}</span>`;
                 stopRecordingUI();
             };
@@ -698,7 +641,7 @@
             const playBtn = document.getElementById('play-user-audio-btn');
             
             if (!recognition) { 
-                alert("您的瀏覽器不支援語音辨識。\niOS 用戶：請嘗試使用 Chrome App 並允許麥克風權限。\nAndroid 用戶：請使用 Chrome。"); 
+                alert("您的瀏覽器不支援語音辨識。\n建議使用 Chrome 或 Edge 瀏覽器。"); 
                 return; 
             }
 
@@ -707,32 +650,39 @@
 
             if (!isRecording) {
                 try {
-                    navigator.mediaDevices.getUserMedia({ audio: true }).then(stream => {
-                        mediaRecorder = new MediaRecorder(stream);
-                        audioChunks = [];
-                        mediaRecorder.ondataavailable = event => audioChunks.push(event.data);
-                        mediaRecorder.onstop = () => {
-                            const audioBlob = new Blob(audioChunks, { type: 'audio/wav' });
-                            if (audioURL) URL.revokeObjectURL(audioURL);
-                            audioURL = URL.createObjectURL(audioBlob);
-                            playBtn.classList.remove('hidden');
-                            playBtn.classList.add('flex');
-                        };
-                        mediaRecorder.start();
-                    }).catch(err => {
-                        console.warn("錄音啟動失敗，但繼續辨識", err);
-                    });
+                    // 【核心修正】Android 手機同時啟用 getUserMedia 與 SpeechRecognition 會產生麥克風衝突
+                    const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+
+                    if (!isMobile && navigator.mediaDevices) {
+                        navigator.mediaDevices.getUserMedia({ audio: true }).then(stream => {
+                            mediaRecorder = new MediaRecorder(stream);
+                            audioChunks = [];
+                            mediaRecorder.ondataavailable = event => audioChunks.push(event.data);
+                            mediaRecorder.onstop = () => {
+                                const audioBlob = new Blob(audioChunks, { type: 'audio/wav' });
+                                if (audioURL) URL.revokeObjectURL(audioURL);
+                                audioURL = URL.createObjectURL(audioBlob);
+                                playBtn.classList.remove('hidden');
+                                playBtn.classList.add('flex');
+                            };
+                            mediaRecorder.start();
+                        }).catch(err => {
+                            console.warn("錄音啟動失敗，但繼續辨識", err);
+                        });
+                    } else {
+                        playBtn.classList.add('hidden');
+                        playBtn.classList.remove('flex');
+                    }
 
                     recognition.start();
                     isRecording = true;
                     btn.className = "rpg-btn py-3 rounded-lg bg-pink-600 text-white border-pink-500 recording-pulse flex flex-col items-center justify-center gap-1";
                     text.textContent = "聆聽中...";
                     feedback.innerHTML = `<span class="text-pink-300 bg-black/40 px-3 py-1 rounded animate-pulse text-xs">請大聲朗讀...</span>`;
-                    playBtn.classList.add('hidden');
-                    playBtn.classList.remove('flex');
+                    
                 } catch(e) { 
                     console.error(e);
-                    alert("無法啟動錄音。請確認網址是否為 https:// 或麥克風權限已開啟。"); 
+                    alert("無法啟動語音辨識。請確認網址是否為 https:// 且麥克風權限已開啟。"); 
                     isRecording = false; 
                     stopRecordingUI(); 
                 }
@@ -794,7 +744,6 @@
             feedback.innerHTML = `<span class="${styleClass} text-xs sm:text-sm font-bold">${msg}</span>`;
         }
 
-        // --- Games ---
         let activeLevel=0; 
         function startGame(level) {
             activeLevel = level;
@@ -811,12 +760,10 @@
         function retryGame() { document.getElementById('game-modal').classList.add('hidden'); startGame(activeLevel); }
         function closeModalAndExit() { document.getElementById('game-modal').classList.add('hidden'); exitGame(); }
         
-        // Level 1
         let g1CurrentItem, g1Score=0, g1Questions=[], g1Index=0, g1QuestionStartTime=0;
         function startLevel1(){
             g1Score=0; g1Index=0;
             document.getElementById('g1-score').textContent=g1Score;
-            // Use current stage vocab for games
             const list = getCurrentVocabList();
             g1Questions = shuffleArray([...list]).slice(0,10);
             nextQuestionG1();
@@ -829,7 +776,6 @@
             document.getElementById('g1-question').textContent=g1CurrentItem.word;
             document.getElementById('g1-pos').textContent=g1CurrentItem.pos;
             
-            // Options from same stage preferably
             let list = getCurrentVocabList();
             let opts=[g1CurrentItem.meaning];
             let tempVocab = [...list]; 
@@ -861,7 +807,7 @@
                 if(t < 1.5) p += 50; else if(t < 3) p += 30; else if(t < 5) p += 10;
                 g1Score += p;
                 document.getElementById('g1-score').textContent = g1Score;
-                playSuccessSound(); // Play success sound
+                playSuccessSound();
                 btn.className = "w-full py-3 px-4 bg-green-600 rounded-lg text-white font-bold border-2 border-green-400 mb-2";
                 document.getElementById('g1-feedback').innerHTML = `<span class="text-green-300">答對了! +${p}</span>`;
                 setTimeout(() => { g1Index++; nextQuestionG1() }, 1000);
@@ -878,7 +824,6 @@
         }
         function endLevel1(){userData.history.unshift({date:new Date().toLocaleDateString(),action:`眼明手快 得分:${g1Score}`});saveData();showModal("得分",g1Score,"不錯喔!");}
         
-        // Level 2
         let g2Selected=[], g2Matches=0, g2TimerInterval, g2StartTime; const G2_PAIRS=6;
         function startLevel2(){
             g2Matches=0;
@@ -889,7 +834,6 @@
             g2TimerInterval=setInterval(()=>{let e=Math.floor((Date.now()-g2StartTime)/1000);document.getElementById('g2-timer').textContent=`${Math.floor(e/60).toString().padStart(2,'0')}:${(e%60).toString().padStart(2,'0')}`},1000);
             
             const list = getCurrentVocabList();
-            // Ensure enough words, otherwise repeat or pick from all
             let source = list.length >= G2_PAIRS ? list : vocabData;
             
             let d=[];
@@ -897,10 +841,9 @@
             
             const g=document.getElementById('g2-grid');g.innerHTML='';d.forEach(c=>{let e=document.createElement('div');e.className="game-card bg-slate-800/80 border-2 border-purple-500/30 rounded h-24 flex items-center justify-center p-2 text-center text-sm font-bold text-purple-200 shadow-sm hover:bg-purple-900/50 cursor-pointer whitespace-pre-line backdrop-blur-sm";e.textContent=c.content;e.onclick=()=>selectG2Card(e,c);g.appendChild(e)});
         }
-        function selectG2Card(e,c){if(e.classList.contains('opacity-0')||g2Selected.some(s=>s.e===e)||g2Selected.length>=2)return;e.className="game-card bg-purple-600 border-2 border-white rounded h-24 flex items-center justify-center p-2 text-center text-sm font-bold text-white shadow-[0_0_15px_#a855f7] scale-105 whitespace-pre-line";g2Selected.push({e,c});if(g2Selected.length===2){let[f,s]=g2Selected;if(f.c.matchId===s.c.matchId&&f.c.type!==s.c.type){setTimeout(()=>{f.e.classList.add('opacity-0','pointer-events-none');s.e.classList.add('opacity-0','pointer-events-none');g2Matches++;document.getElementById('g2-left').textContent=G2_PAIRS-g2Matches;g2Selected=[];playSuccessSound(); // Play success sound
+        function selectG2Card(e,c){if(e.classList.contains('opacity-0')||g2Selected.some(s=>s.e===e)||g2Selected.length>=2)return;e.className="game-card bg-purple-600 border-2 border-white rounded h-24 flex items-center justify-center p-2 text-center text-sm font-bold text-white shadow-[0_0_15px_#a855f7] scale-105 whitespace-pre-line";g2Selected.push({e,c});if(g2Selected.length===2){let[f,s]=g2Selected;if(f.c.matchId===s.c.matchId&&f.c.type!==s.c.type){setTimeout(()=>{f.e.classList.add('opacity-0','pointer-events-none');s.e.classList.add('opacity-0','pointer-events-none');g2Matches++;document.getElementById('g2-left').textContent=G2_PAIRS-g2Matches;g2Selected=[];playSuccessSound(); 
         if(g2Matches===G2_PAIRS){clearInterval(g2TimerInterval);let t=Math.floor((Date.now()-g2StartTime)/1000);userData.history.unshift({date:new Date().toLocaleDateString(),action:`記憶配對 耗時:${t}s`});saveData();showModal("耗時",`${t}s`,"恭喜!");}},300)}else{setTimeout(()=>{[f,s].forEach(i=>i.e.className="game-card bg-slate-800/80 border-2 border-purple-500/30 rounded h-24 flex items-center justify-center p-2 text-center text-sm font-bold text-purple-200 shadow-sm hover:bg-purple-900/50 cursor-pointer whitespace-pre-line backdrop-blur-sm");g2Selected=[]},600)}}}
         
-        // Level 3
         let g3Score=0,g3Q=[],g3Idx=0,g3Item;
         function startLevel3(){
             g3Score=0;g3Idx=0;
@@ -910,11 +853,10 @@
             nextG3();
         }
         function nextG3(){if(g3Idx>=g3Q.length){endLevel3();return;}document.getElementById('g3-progress').textContent=`${g3Idx+1}/${g3Q.length}`;document.getElementById('g3-feedback').textContent="";g3Item=g3Q[g3Idx];document.getElementById('g3-pos').textContent=g3Item.pos;document.getElementById('g3-meaning').textContent=g3Item.meaning;let i=document.getElementById('g3-input');i.value="";i.disabled=false;i.className="w-full px-4 py-3 text-lg bg-slate-900 border-2 border-slate-600 rounded-lg text-white text-center font-bold font-cute";i.focus();}
-        function checkAnswerG3(){let i=document.getElementById('g3-input');if(i.disabled)return;let v=i.value.trim().toLowerCase();i.disabled=true;if(v===g3Item.word.toLowerCase()){g3Score+=200;document.getElementById('g3-score').textContent=g3Score;playSuccessSound(); // Play success sound
+        function checkAnswerG3(){let i=document.getElementById('g3-input');if(i.disabled)return;let v=i.value.trim().toLowerCase();i.disabled=true;if(v===g3Item.word.toLowerCase()){g3Score+=200;document.getElementById('g3-score').textContent=g3Score;playSuccessSound(); 
         i.className="w-full px-4 py-3 text-lg bg-green-900/50 border-2 border-green-500 rounded-lg text-green-300 text-center font-bold font-cute";document.getElementById('g3-feedback').innerHTML=`<span class="text-green-300">正確!</span>`;setTimeout(()=>{g3Idx++;nextG3()},1000)}else{i.className="w-full px-4 py-3 text-lg bg-red-900/50 border-2 border-red-500 rounded-lg text-red-300 text-center font-bold font-cute shake";document.getElementById('g3-feedback').innerHTML=`<span class="text-red-300">答案: ${g3Item.word}</span>`;setTimeout(()=>{i.classList.remove('shake')},500);setTimeout(()=>{g3Idx++;nextG3()},2000)}}
         function endLevel3(){userData.history.unshift({date:new Date().toLocaleDateString(),action:`拼字大師 得分:${g3Score}`});saveData();showModal("得分",g3Score,"完成!");}
 
-        // Stats
         function updateStats() {
             document.getElementById('stat-learned').textContent = userData.learned.length;
             document.getElementById('stat-speech-count').textContent = userData.speechCount;
